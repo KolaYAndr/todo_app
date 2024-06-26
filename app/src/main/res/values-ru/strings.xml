@@ -3,4 +3,16 @@
     <string name="my_tasks">Мои дела</string>
     <string name="unknown_error">Неизвестная ошибка</string>
     <string name="more_info">Подробнее</string>
+    <string name="done">Выполнено</string>
+    <string name="show_done_tasks">Показать выполненные задачи</string>
+    <string name="add_todo_task">Добавить задачу</string>
+    <string name="what_to_do">Что надо сделать…</string>
+    <string name="save">СОХРАНИТЬ</string>
+    <string name="importance">Важность</string>
+    <string name="deadline">Срок выполнения</string>
+    <string name="delete">Удалить</string>
+    <string name="importance_no">Нет</string>
+    <string name="importance_normal">Низкий</string>
+    <string name="importance_urgent">Высокий</string>
+    <string name="unexpected_error">Непредвиденная ошибка</string>
 </resources>
