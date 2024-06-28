@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="my_tasks">Мои дела</string>
-    <string name="unknown_error">Неизвестная ошибка</string>
     <string name="more_info">Подробнее</string>
     <string name="done">Выполнено</string>
     <string name="show_done_tasks">Показать выполненные задачи</string>
@@ -9,10 +8,17 @@
     <string name="what_to_do">Что надо сделать…</string>
     <string name="save">СОХРАНИТЬ</string>
     <string name="importance">Важность</string>
-    <string name="deadline">Срок выполнения</string>
+    <string name="deadline">Сделать до</string>
     <string name="delete">Удалить</string>
-    <string name="importance_no">Нет</string>
-    <string name="importance_normal">Низкий</string>
+    <string name="importance_low">Низкий</string>
+    <string name="importance_normal">Обычный</string>
     <string name="importance_urgent">Высокий</string>
     <string name="unexpected_error">Непредвиденная ошибка</string>
+    <string name="visibility_content">Показать выполненые задания</string>
+    <string name="visibility_title">Видимость</string>
+    <string name="item_swipe">Смахнуть задачу</string>
+    <string name="close">Закрыть</string>
+    <string name="mark_done">Отметить выполненным</string>
+    <string name="ok">@android:string/ok</string>
+    <string name="cancel">Отменить</string>
 </resources>
