@@ -31,7 +31,7 @@ class TodoListViewModel @Inject constructor(private val repository: TodoItemsRep
                     TodoListUiState(
                         items = todos,
                         isFiltered = false,
-                        completed = todos.count { it.isDone },
+                        completed = repository.getCompletedNumber(),
                         errorMessage = null
                     )
                 }
@@ -46,11 +46,18 @@ class TodoListViewModel @Inject constructor(private val repository: TodoItemsRep
                     _uiState.update {
                         _uiState.value.copy(
                             items = todos.filter { !it.isDone },
-                            isFiltered = true
+                            isFiltered = true,
+                            completed = repository.getCompletedNumber()
                         )
                     }
                 } else {
-                    _uiState.update { _uiState.value.copy(items = todos, isFiltered = false) }
+                    _uiState.update {
+                        _uiState.value.copy(
+                            items = todos,
+                            isFiltered = false,
+                            completed = repository.getCompletedNumber()
+                        )
+                    }
                 }
 
             }
