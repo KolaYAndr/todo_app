@@ -29,13 +29,13 @@ fun DeadlineBlock(
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {
-        Column{
+        Column(verticalArrangement = Arrangement.spacedBy(4.dp, Alignment.Top)) {
             Text(
                 text = stringResource(id = R.string.deadline),
                 style = TodoAppTheme.typography.body,
                 color = TodoAppTheme.colorScheme.labelPrimary
             )
-            AnimatedVisibility (isDeadlineSet) {
+            AnimatedVisibility(isDeadlineSet) {
                 Text(
                     text = deadlineText,
                     style = TodoAppTheme.typography.subhead,

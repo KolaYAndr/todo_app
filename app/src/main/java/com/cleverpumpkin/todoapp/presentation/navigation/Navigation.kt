@@ -29,6 +29,7 @@ fun Navigation(navController: NavHostController) {
                 onEndToStartAction = { item -> todoListViewModel.deleteItem(item) },
                 onAddItem = { navController.navigate("${NavRoutes.TODO_DETAIL_SCREEN}/${NavArgs.CREATE_TODO}") },
                 onNavigate = { id -> navController.navigate("${NavRoutes.TODO_DETAIL_SCREEN}/${id}") },
+                onFilter = { todoListViewModel.filter() },
                 modifier = Modifier.fillMaxSize()
             )
         }
@@ -58,6 +59,8 @@ fun Navigation(navController: NavHostController) {
                     todoDetailViewModel.deleteItem()
                     navController.navigateUp()
                 },
+                onTextChange = { todoDetailViewModel.changeText(it) },
+                onSelectDeadline = { todoDetailViewModel.selectDeadline(it) },
                 modifier = Modifier.fillMaxSize()
             )
         }

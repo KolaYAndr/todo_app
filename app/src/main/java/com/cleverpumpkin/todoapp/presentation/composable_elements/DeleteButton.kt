@@ -1,7 +1,9 @@
 package com.cleverpumpkin.todoapp.presentation.composable_elements
 
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
@@ -26,7 +28,9 @@ fun DeleteButton(
         colors = ButtonDefaults.textButtonColors(
             contentColor = TodoAppTheme.colorScheme.red,
             disabledContentColor = TodoAppTheme.colorScheme.labelDisable
-        )
+        ),
+        contentPadding = PaddingValues(0.dp),
+        shape = RoundedCornerShape(8.dp)
     ) {
         Icon(
             modifier = Modifier.size(24.dp),
