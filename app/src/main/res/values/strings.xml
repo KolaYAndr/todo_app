@@ -1,9 +1,8 @@
 <resources>
     <string name="app_name" translatable="false">Todo App</string>
     <string name="my_tasks">My tasks</string>
-    <string name="unknown_error">Unknown error</string>
     <string name="more_info">More info</string>
-    <string name="done">Done</string>
+    <string name="done">Done - %d</string>
     <string name="show_done_tasks">Show done tasks</string>
     <string name="add_todo_task">Add todo task</string>
     <string name="what_to_do">What to do…</string>
@@ -11,8 +10,15 @@
     <string name="importance">Importance</string>
     <string name="deadline">Deadline</string>
     <string name="delete">Delete</string>
-    <string name="importance_no">No</string>
+    <string name="importance_low">Low</string>
     <string name="importance_normal">Normal</string>
     <string name="importance_urgent">Urgent</string>
     <string name="unexpected_error">Unexpected Error</string>
+    <string name="visibility_content">Show done tasks</string>
+    <string name="visibility_title">Visibility</string>
+    <string name="item_swipe">Item swipe</string>
+    <string name="close">Close</string>
+    <string name="mark_done">Mark done</string>
+    <string name="ok">@android:string/ok</string>
+    <string name="cancel">Cancel</string>
 </resources>

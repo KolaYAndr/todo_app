@@ -1,13 +1,16 @@
 package com.cleverpumpkin.todoapp.domain.repository
 
 import com.cleverpumpkin.todoapp.domain.models.TodoItem
+import kotlinx.coroutines.flow.Flow
 
 interface TodoItemsRepo {
-    fun getAllItems(): List<TodoItem>
+    suspend fun fetchTodoItems(): Flow<List<TodoItem>>
 
-    fun addTodoItem(item: TodoItem) : Boolean
+    suspend fun getCompletedNumber(): Int
 
-    fun deleteTodoItem(item: TodoItem) : Boolean
+    suspend fun addTodoItem(item: TodoItem)
 
-    fun findItemById(id: String) : TodoItem
+    suspend fun deleteTodoItem(item: TodoItem)
+
+    suspend fun findItemById(id: String) : TodoItem
 }

@@ -4,10 +4,10 @@ import java.time.LocalDateTime
 
 data class TodoItem(
     val id: String,
-    var text: String,
-    var importance: Importance,
-    var deadline: LocalDateTime? = null,
+    val text: String,
+    val importance: Importance,
+    val deadline: LocalDateTime? = null,
     var isDone: Boolean,
     val createdAt: LocalDateTime,
-    var modifiedAt: LocalDateTime? = null
+    val modifiedAt: LocalDateTime? = null
 )
