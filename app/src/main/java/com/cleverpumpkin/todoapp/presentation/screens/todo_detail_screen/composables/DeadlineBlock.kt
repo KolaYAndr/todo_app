@@ -11,7 +11,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
 import com.cleverpumpkin.todoapp.R
 import com.cleverpumpkin.todoapp.presentation.composable_elements.DeadlineSwitch
@@ -50,16 +50,18 @@ fun DeadlineBlock(
     }
 }
 
-@Preview
+@PreviewLightDark
 @Composable
 fun PreviewDeadline() {
-    val deadline = true
-    DeadlineBlock(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(12.dp),
-        isDeadlineSet = deadline,
-        deadlineText = "2 июня 2021",
-        onSwitch = {}
-    )
+    TodoAppTheme {
+        val deadline = true
+        DeadlineBlock(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(12.dp),
+            isDeadlineSet = deadline,
+            deadlineText = "2 июня 2021",
+            onSwitch = {}
+        )
+    }
 }

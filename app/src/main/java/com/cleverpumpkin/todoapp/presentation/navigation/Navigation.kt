@@ -26,10 +26,11 @@ fun Navigation(navController: NavHostController) {
             val state = todoListViewModel.uiState.collectAsStateWithLifecycle()
             TodoListScreen(
                 state = state,
-                onEndToStartAction = { item -> todoListViewModel.deleteItem(item) },
+                onEndToStartAction = { item -> todoListViewModel.deleteItem(item.id) },
                 onAddItem = { navController.navigate("${NavRoutes.TODO_DETAIL_SCREEN}/${NavArgs.CREATE_TODO}") },
                 onNavigate = { id -> navController.navigate("${NavRoutes.TODO_DETAIL_SCREEN}/${id}") },
                 onFilter = { todoListViewModel.filter() },
+                onCheck = { item -> todoListViewModel.checkItem(item) },
                 modifier = Modifier.fillMaxSize()
             )
         }
@@ -50,7 +51,7 @@ fun Navigation(navController: NavHostController) {
             TodoDetailScreen(
                 state = state,
                 onSave = {
-                    todoDetailViewModel.addItem()
+                    todoDetailViewModel.saveItem()
                     navController.navigateUp()
                 },
                 onNavBack = { navController.navigateUp() },

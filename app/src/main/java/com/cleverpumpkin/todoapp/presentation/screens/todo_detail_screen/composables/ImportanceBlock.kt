@@ -10,7 +10,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
 import com.cleverpumpkin.todoapp.R
 import com.cleverpumpkin.todoapp.presentation.theme.TodoAppTheme
@@ -38,15 +38,16 @@ fun ImportanceBlock(
     }
 }
 
-@Preview(showBackground = true)
+@PreviewLightDark
 @Composable
 fun PreviewImportance() {
-    ImportanceBlock(
-        importanceText = stringResource(id = R.string.importance_low),
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(top = 12.dp)
-            .background(TodoAppTheme.colorScheme.backPrimary)
-            .padding(16.dp)
-    )
+    TodoAppTheme {
+        ImportanceBlock(
+            importanceText = stringResource(id = R.string.importance_low),
+            modifier = Modifier
+                .fillMaxWidth()
+                .background(TodoAppTheme.colorScheme.backPrimary)
+                .padding(16.dp)
+        )
+    }
 }

@@ -11,6 +11,8 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.DatePicker
 import androidx.compose.material3.DatePickerDialog
 import androidx.compose.material3.DropdownMenu
@@ -67,11 +69,13 @@ fun TodoDetailScreen(
     ) { paddingValues ->
         when (uiState.errorMessage) {
             null -> {
+                val scrollState = rememberScrollState()
                 Column(
                     modifier = Modifier
                         .fillMaxSize()
                         .padding(paddingValues)
                         .background(TodoAppTheme.colorScheme.backPrimary)
+                        .verticalScroll(scrollState)
                 ) {
                     InputField(
                         onTextValueChange = { onTextChange(it) },

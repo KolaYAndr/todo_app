@@ -36,6 +36,7 @@ fun TodoListScreen(
     onAddItem: () -> Unit,
     onNavigate: (String) -> Unit,
     onFilter: () -> Unit,
+    onCheck: (TodoItem) -> Unit,
     modifier: Modifier = Modifier
 ) {
     val topAppBarState = rememberTopAppBarState()
@@ -80,8 +81,10 @@ fun TodoListScreen(
                         .background(TodoAppTheme.colorScheme.backPrimary),
                     scrollBehavior = scrollBehavior,
                     items = uiState.items,
-                    onEndToStartAction = { item -> onEndToStartAction(item) },
-                    onNavigate = { id -> onNavigate(id) }
+                    onDelete = { item -> onEndToStartAction(item) },
+                    onNavigate = { id -> onNavigate(id) },
+                    onCheck = { item -> onCheck(item) },
+                    onAddItem = { onAddItem() }
                 )
             }
 
