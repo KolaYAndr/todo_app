@@ -89,4 +89,9 @@ dependencies {
 
     //Yandex Auth
     implementation(libs.yandex.android)
+
+    //Room
+    implementation(libs.room.runtime)
+    ksp(libs.room.compiler)
+    implementation(libs.room.ktx)
 }
