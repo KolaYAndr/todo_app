@@ -10,7 +10,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.DatePicker
@@ -20,14 +19,19 @@ import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarDuration
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.SnackbarResult
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.ui.Alignment
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.SpanStyle
@@ -38,10 +42,12 @@ import com.cleverpumpkin.todoapp.R
 import com.cleverpumpkin.todoapp.domain.models.Importance
 import com.cleverpumpkin.todoapp.presentation.composable_elements.DeleteButton
 import com.cleverpumpkin.todoapp.presentation.composable_elements.InputField
+import com.cleverpumpkin.todoapp.presentation.composable_elements.RefreshBlock
 import com.cleverpumpkin.todoapp.presentation.screens.todo_detail_screen.composables.DeadlineBlock
 import com.cleverpumpkin.todoapp.presentation.screens.todo_detail_screen.composables.ImportanceBlock
 import com.cleverpumpkin.todoapp.presentation.screens.todo_detail_screen.composables.UsualTopAppBar
 import com.cleverpumpkin.todoapp.presentation.theme.TodoAppTheme
+import kotlinx.coroutines.launch
 import java.time.LocalDateTime
 import java.time.ZoneOffset
 import java.time.format.DateTimeFormatter
@@ -56,18 +62,56 @@ fun TodoDetailScreen(
     onSelectDeadline: (LocalDateTime?) -> Unit,
     onTextChange: (String) -> Unit,
     onDelete: () -> Unit,
+    onRefresh: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     val uiState = state.value
+    val snackbarHostState = remember { SnackbarHostState() }
+    val scope = rememberCoroutineScope()
     Scaffold(modifier = modifier.background(TodoAppTheme.colorScheme.backPrimary),
         topBar = {
             UsualTopAppBar(
                 onSave = { onSave() },
                 onNavigate = { onNavBack() }
             )
+        },
+        snackbarHost = {
+            if (uiState.errorCode != null) {
+                val errorMessage = stringResource(
+                    id = when (uiState.errorCode) {
+                        404 -> R.string.network_error_404
+                        401 -> R.string.network_error_401
+                        403 -> R.string.network_error_403
+                        408 -> R.string.network_error_408
+                        500 -> R.string.network_error_500
+                        else -> R.string.unexpected_error
+                    }
+                )
+                val actionMessage = stringResource(id = R.string.refresh)
+                SnackbarHost(hostState = snackbarHostState)
+                LaunchedEffect(Unit) {
+                    scope.launch {
+                        val result = snackbarHostState
+                            .showSnackbar(
+                                message = errorMessage,
+                                actionLabel = actionMessage,
+                                duration = SnackbarDuration.Indefinite
+                            )
+                        when (result) {
+                            SnackbarResult.ActionPerformed -> {
+                                onRefresh()
+                            }
+
+                            SnackbarResult.Dismissed -> {
+                                onNavBack()
+                            }
+                        }
+                    }
+                }
+            }
         }
     ) { paddingValues ->
-        when (uiState.errorMessage) {
+        when (uiState.errorCode) {
             null -> {
                 val scrollState = rememberScrollState()
                 Column(
@@ -147,8 +191,10 @@ fun TodoDetailScreen(
                     val datePickerState = rememberDatePickerState()
                     val showDatePicker = remember { mutableStateOf(false) }
                     val formatter = DateTimeFormatter.ofPattern("dd MM yyyy")
-                    val pickedDate = remember { mutableStateOf("") } //почему-то не сработало внутри ремембера считать дедлайн, пришлось вынести отдельно
-                    if(uiState.deadline != null) pickedDate.value = formatter.format(uiState.deadline)
+                    val pickedDate =
+                        remember { mutableStateOf("") }
+                    if (uiState.deadline != null) pickedDate.value =
+                        formatter.format(uiState.deadline)
 
                     AnimatedVisibility(
                         visible = showDatePicker.value,
@@ -212,11 +258,10 @@ fun TodoDetailScreen(
                 }
             }
 
-            else -> Text(
-                text = uiState.errorMessage,
-                modifier = Modifier
-                    .fillMaxSize()
-                    .wrapContentSize(Alignment.Center)
+            else -> RefreshBlock(
+                errorCode = uiState.errorCode,
+                onRefresh = { onRefresh() },
+                modifier = Modifier.fillMaxSize()
             )
         }
     }

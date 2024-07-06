@@ -1,6 +1,6 @@
 package com.cleverpumpkin.todoapp.data.remote.utils
 
-object HttpRoutes {
+object ApiRoutes {
     private const val BASE_URL = "https://hive.mrdekk.ru/todo"
 
     fun getItemsListRoute() = "$BASE_URL/list"

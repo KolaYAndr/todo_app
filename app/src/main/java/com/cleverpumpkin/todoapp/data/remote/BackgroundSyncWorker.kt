@@ -7,6 +7,10 @@ import com.cleverpumpkin.todoapp.domain.models.Response
 import com.cleverpumpkin.todoapp.domain.repository.TodoItemsRepository
 import javax.inject.Inject
 
+/**
+ * Worker class responsible for background synchronization of todo items.
+ */
+
 class BackgroundSyncWorker(context: Context, workerParams: WorkerParameters) :
     CoroutineWorker(context, workerParams) {
 

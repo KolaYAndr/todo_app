@@ -9,14 +9,11 @@ import kotlinx.serialization.json.Json
 suspend inline fun <reified T> HttpClient.executeRequest(
     action: HttpClient.() -> HttpResponse
 ): Response<T> {
-    return try {
-        val response = this.action()
+    val response = this.action()
+    return if (response.status.value in 200..299) {
         val responseBody = response.bodyAsText()
         val typedResponse: T = Json.decodeFromString(responseBody)
 
         Response.Success(typedResponse)
-    }
-    catch (e: Exception) {
-        Response.Failure(e)
-    }
+    } else Response.Failure(response.status.value)
 }

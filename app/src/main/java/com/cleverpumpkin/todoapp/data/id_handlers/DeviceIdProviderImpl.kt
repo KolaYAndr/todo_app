@@ -6,6 +6,10 @@ import com.cleverpumpkin.todoapp.domain.id_handlers.DeviceIdProvider
 import com.cleverpumpkin.todoapp.domain.id_handlers.IdGenerator
 import javax.inject.Inject
 
+/**
+ * Implementation of the DeviceIdProvider interface that provides and stores a device ID using SharedPreferences.
+ */
+
 class DeviceIdProviderImpl @Inject constructor(
     private val prefs: SharedPreferences,
     private val idGenerator: IdGenerator

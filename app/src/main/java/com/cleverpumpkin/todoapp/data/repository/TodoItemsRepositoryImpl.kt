@@ -4,6 +4,9 @@ import android.content.SharedPreferences
 import com.cleverpumpkin.todoapp.data.mapper.toDomain
 import com.cleverpumpkin.todoapp.data.preferences.PreferenceKeys
 import com.cleverpumpkin.todoapp.data.remote.api.TodoApi
+import com.cleverpumpkin.todoapp.data.remote.responses.AddItemResponse
+import com.cleverpumpkin.todoapp.data.remote.responses.ChangeItemResponse
+import com.cleverpumpkin.todoapp.data.remote.responses.DeleteItemByIdResponse
 import com.cleverpumpkin.todoapp.data.remote.responses.GetItemByIdResponse
 import com.cleverpumpkin.todoapp.data.remote.responses.GetItemListResponse
 import com.cleverpumpkin.todoapp.domain.id_handlers.DeviceIdProvider
@@ -18,6 +21,10 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
+
+/**
+ * Implementation of the TodoItemsRepository interface that interacts with the API and local storage.
+ */
 
 class TodoItemsRepositoryImpl @Inject constructor(
     private val api: TodoApi,
@@ -38,7 +45,7 @@ class TodoItemsRepositoryImpl @Inject constructor(
             response
         }
 
-    override suspend fun addTodoItem(item: TodoItem) {
+    override suspend fun addTodoItem(item: TodoItem): Response<AddItemResponse> =
         withContext(Dispatchers.IO) {
             val revision = preferences.getInt(PreferenceKeys.REVISION, 0).toString()
             val response =
@@ -46,22 +53,21 @@ class TodoItemsRepositoryImpl @Inject constructor(
             if (response is Response.Success) {
                 rewriteRevision(response.result.revision)
             }
+            fetchTodoItems()
+            response
         }
-        fetchTodoItems()
-    }
 
 
-
-    override suspend fun deleteTodoItem(itemId: String) {
+    override suspend fun deleteTodoItem(itemId: String): Response<DeleteItemByIdResponse> =
         withContext(Dispatchers.IO) {
             val revision = preferences.getInt(PreferenceKeys.REVISION, 0).toString()
             val response = api.deleteItemById(itemId, revision)
             if (response is Response.Success) {
                 rewriteRevision(response.result.revision)
             }
+            fetchTodoItems()
+            response
         }
-        fetchTodoItems()
-    }
 
 
     override suspend fun findItemById(id: String): Response<GetItemByIdResponse> =
@@ -74,7 +80,7 @@ class TodoItemsRepositoryImpl @Inject constructor(
             response
         }
 
-    override suspend fun updateTodoItem(item: TodoItem) {
+    override suspend fun updateTodoItem(item: TodoItem): Response<ChangeItemResponse> =
         withContext(Dispatchers.IO) {
             val revision = preferences.getInt(PreferenceKeys.REVISION, 0).toString()
             val response = api.changeItem(item.toDto(deviceIdProvider.provideDeviceId()), revision)
@@ -82,8 +88,9 @@ class TodoItemsRepositoryImpl @Inject constructor(
                 rewriteRevision(response.result.revision)
             }
             fetchTodoItems()
+            response
         }
-    }
+
 
     private fun rewriteRevision(revision: Int) {
         preferences.edit().putInt(

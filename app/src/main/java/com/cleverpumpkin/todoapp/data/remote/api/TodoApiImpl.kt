@@ -4,14 +4,14 @@ import com.cleverpumpkin.todoapp.data.remote.dto.TodoItemDto
 import com.cleverpumpkin.todoapp.data.remote.requests.AddItemRequest
 import com.cleverpumpkin.todoapp.data.remote.requests.ChangeItemRequest
 import com.cleverpumpkin.todoapp.data.remote.requests.UpdateItemListRequest
-import com.cleverpumpkin.todoapp.data.remote.utils.HttpRoutes
+import com.cleverpumpkin.todoapp.data.remote.utils.ApiRoutes
 import com.cleverpumpkin.todoapp.data.remote.responses.AddItemResponse
 import com.cleverpumpkin.todoapp.data.remote.responses.ChangeItemResponse
 import com.cleverpumpkin.todoapp.data.remote.responses.DeleteItemByIdResponse
 import com.cleverpumpkin.todoapp.data.remote.responses.GetItemByIdResponse
 import com.cleverpumpkin.todoapp.data.remote.responses.GetItemListResponse
 import com.cleverpumpkin.todoapp.data.remote.responses.UpdateItemListResponse
-import com.cleverpumpkin.todoapp.data.remote.utils.HttpHeaders
+import com.cleverpumpkin.todoapp.data.remote.utils.ApiHeaders
 import com.cleverpumpkin.todoapp.data.remote.utils.executeRequest
 import com.cleverpumpkin.todoapp.domain.models.Response
 import io.ktor.client.HttpClient
@@ -25,10 +25,14 @@ import io.ktor.client.request.setBody
 import io.ktor.client.request.url
 import javax.inject.Inject
 
+/**
+ * Implementation of the TodoApi interface for performing CRUD operations on todo items via HTTP requests.
+ */
+
 class TodoApiImpl @Inject constructor(private val client: HttpClient) : TodoApi {
 
     override suspend fun getItems(): Response<GetItemListResponse> {
-        return client.executeRequest { get { url(HttpRoutes.getItemsListRoute()) } }
+        return client.executeRequest { get { url(ApiRoutes.getItemsListRoute()) } }
     }
 
     override suspend fun updateItemList(
@@ -38,23 +42,23 @@ class TodoApiImpl @Inject constructor(private val client: HttpClient) : TodoApi 
         val request = UpdateItemListRequest(items = newList)
         return client.executeRequest {
             patch {
-                url(HttpRoutes.updateItemListRoute())
+                url(ApiRoutes.updateItemListRoute())
                 setBody(request)
-                header(HttpHeaders.LAST_KNOWN_REVISION, revision)
+                header(ApiHeaders.LAST_KNOWN_REVISION, revision)
             }
         }
     }
 
     override suspend fun getItemById(id: String): Response<GetItemByIdResponse> =
-        client.executeRequest { get { url(HttpRoutes.getItemByIdRoute(id)) } }
+        client.executeRequest { get { url(ApiRoutes.getItemByIdRoute(id)) } }
 
     override suspend fun addItem(item: TodoItemDto, revision: String): Response<AddItemResponse> {
         val request = AddItemRequest(item = item)
         return client.executeRequest {
             post {
-                url(HttpRoutes.addItemRoute())
+                url(ApiRoutes.addItemRoute())
                 setBody(request)
-                header(HttpHeaders.LAST_KNOWN_REVISION, revision)
+                header(ApiHeaders.LAST_KNOWN_REVISION, revision)
             }
         }
     }
@@ -66,9 +70,9 @@ class TodoApiImpl @Inject constructor(private val client: HttpClient) : TodoApi 
         val request = ChangeItemRequest(item = item)
         return client.executeRequest {
             put {
-                url(HttpRoutes.changeItemRoute(item.id))
+                url(ApiRoutes.changeItemRoute(item.id))
                 setBody(request)
-                header(HttpHeaders.LAST_KNOWN_REVISION, revision)
+                header(ApiHeaders.LAST_KNOWN_REVISION, revision)
             }
         }
     }
@@ -78,8 +82,8 @@ class TodoApiImpl @Inject constructor(private val client: HttpClient) : TodoApi 
         revision: String
     ): Response<DeleteItemByIdResponse> = client.executeRequest {
         delete {
-            url(HttpRoutes.deleteItemByIdRoute(id))
-            header(HttpHeaders.LAST_KNOWN_REVISION, revision)
+            url(ApiRoutes.deleteItemByIdRoute(id))
+            header(ApiHeaders.LAST_KNOWN_REVISION, revision)
         }
     }
 }

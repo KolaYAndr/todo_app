@@ -1,9 +1,9 @@
 package com.cleverpumpkin.todoapp.data.di
 
 import android.util.Log
-import com.cleverpumpkin.todoapp.data.remote.api.ApiKey
 import com.cleverpumpkin.todoapp.data.remote.api.TodoApi
 import com.cleverpumpkin.todoapp.data.remote.api.TodoApiImpl
+import com.cleverpumpkin.todoapp.domain.repository.AuthRepository
 import dagger.Binds
 import dagger.Module
 import dagger.Provides
@@ -36,7 +36,7 @@ interface NetworkModule {
 
         @Provides
         @Singleton
-        fun provideHttpClient() : HttpClient {
+        fun provideHttpClient(authRepository: AuthRepository) : HttpClient {
             return HttpClient(Android) {
                 install(HttpRequestRetry) {
                     retryOnServerErrors(maxRetries = MAX_RETRIES)
@@ -55,7 +55,7 @@ interface NetworkModule {
                     json()
                 }
                 install(DefaultRequest) {
-                    header(HttpHeaders.Authorization, "Bearer ${ApiKey.MY_KEY}")
+                    header(HttpHeaders.Authorization, authRepository.getToken())
                     header(HttpHeaders.ContentType, "application/json")
                     header(HttpHeaders.Accept, "application/json")
                 }

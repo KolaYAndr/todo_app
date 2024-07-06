@@ -24,7 +24,7 @@ import androidx.compose.ui.tooling.preview.PreviewLightDark
 import com.cleverpumpkin.todoapp.R
 import com.cleverpumpkin.todoapp.presentation.theme.TodoAppTheme
 
-private const val collapsedState = 0.5
+private const val COLLAPSED_STATE = 0.5
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -50,7 +50,7 @@ fun CollapsingTopAppBar(
                     style = TodoAppTheme.typography.largeTitle,
                     color = TodoAppTheme.colorScheme.labelPrimary
                 )
-                if (scrollBehavior.state.collapsedFraction < collapsedState) {
+                if (scrollBehavior.state.collapsedFraction < COLLAPSED_STATE) {
                     Row(
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.SpaceBetween,

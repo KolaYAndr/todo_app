@@ -1,5 +1,6 @@
 package com.cleverpumpkin.todoapp.presentation.screens.todo_detail_screen
 
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.cleverpumpkin.todoapp.data.mapper.toDomain
@@ -18,10 +19,15 @@ import kotlinx.coroutines.launch
 import java.time.LocalDateTime
 import javax.inject.Inject
 
+/**
+ * ViewModel for managing the state and interactions of a detailed view of a todo item.
+ */
+
 @HiltViewModel
 class TodoDetailViewModel @Inject constructor(
     private val repository: TodoItemsRepository,
-    private val idGenerator: IdGenerator
+    private val idGenerator: IdGenerator,
+    savedStateHandle: SavedStateHandle
 ) :
     ViewModel() {
     private val _uiState = MutableStateFlow(
@@ -35,13 +41,19 @@ class TodoDetailViewModel @Inject constructor(
     )
     val uiState: StateFlow<TodoDetailUiState> = _uiState.asStateFlow()
 
-    fun findItem(id: String) = viewModelScope.launch {
-        try {
+    private val id: String = checkNotNull(savedStateHandle[NavArgs.TODO_ID])
+
+    init {
+        findItem(id)
+    }
+
+    private fun findItem(id: String) = viewModelScope.launch {
             if (id != NavArgs.CREATE_TODO) {
                 when (val response = repository.findItemById(id)) {
                     is Response.Failure -> _uiState.update {
                         TodoDetailUiState(
-                            errorMessage = response.exception.message, id = "",
+                            errorCode = response.exceptionCode,
+                            id = "",
                             text = "",
                             importance = Importance.Low,
                             createdAt = LocalDateTime.now(),
@@ -66,9 +78,10 @@ class TodoDetailViewModel @Inject constructor(
                 }
 
             }
-        } catch (e: Exception) {
-            _uiState.update { it.copy(errorMessage = e.message) }
-        }
+    }
+
+    fun refresh() {
+        findItem(id)
     }
 
     private fun createTodo(): TodoItem {
@@ -99,11 +112,24 @@ class TodoDetailViewModel @Inject constructor(
     }
 
     fun saveItem() = viewModelScope.launch {
-        if (_uiState.value.id == "") repository.addTodoItem(createTodo())
-        else repository.updateTodoItem(createTodo())
+        processResponse(
+            if (_uiState.value.id == "") repository.addTodoItem(createTodo())
+            else repository.updateTodoItem(createTodo())
+        )
+
     }
 
     fun deleteItem() = viewModelScope.launch {
-        repository.deleteTodoItem(_uiState.value.id)
+        processResponse(repository.deleteTodoItem(_uiState.value.id))
+    }
+
+    private fun processResponse(response: Response<*>, onSuccessAction: (() -> Unit)? = null) {
+        when (response) {
+            is Response.Failure -> {
+                _uiState.update { it.copy(errorCode = response.exceptionCode) }
+                refresh()
+            }
+            is Response.Success -> onSuccessAction?.invoke()
+        }
     }
 }

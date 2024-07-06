@@ -19,6 +19,7 @@ android {
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        manifestPlaceholders["YANDEX_CLIENT_ID"] = "57b411dba8604b3fbc4a2042a4059794"
     }
 
     buildTypes {
@@ -85,4 +86,7 @@ dependencies {
 
     //Kotlinx Serialization
     implementation(libs.kotlinx.serialization.json)
+
+    //Yandex Auth
+    implementation(libs.yandex.android)
 }

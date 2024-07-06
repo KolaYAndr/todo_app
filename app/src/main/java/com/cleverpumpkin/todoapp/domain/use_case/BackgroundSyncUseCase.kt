@@ -11,6 +11,10 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
+/**
+ * Use case for scheduling background synchronization of todo items.
+ */
+
 class BackgroundSyncUseCase @Inject constructor(
     @ApplicationContext private val context: Context
 ) {
