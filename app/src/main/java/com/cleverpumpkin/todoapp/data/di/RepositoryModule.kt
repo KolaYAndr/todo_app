@@ -1,9 +1,11 @@
 package com.cleverpumpkin.todoapp.data.di
 
-import com.cleverpumpkin.todoapp.data.repository.TodoItemsRepository
-import com.cleverpumpkin.todoapp.domain.repository.TodoItemsRepo
+import com.cleverpumpkin.todoapp.data.repository.AuthRepositoryImpl
+import com.cleverpumpkin.todoapp.data.repository.TodoItemsRepositoryImpl
+import com.cleverpumpkin.todoapp.domain.repository.AuthRepository
+import com.cleverpumpkin.todoapp.domain.repository.TodoItemsRepository
+import dagger.Binds
 import dagger.Module
-import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
@@ -11,9 +13,12 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 interface RepositoryModule {
-    companion object {
-        @Provides
-        @Singleton
-        fun provideTodoRepository(): TodoItemsRepo = TodoItemsRepository()
-    }
+
+    @Binds
+    @Singleton
+    fun bindTodoRepository(impl: TodoItemsRepositoryImpl): TodoItemsRepository
+
+    @Binds
+    @Singleton
+    fun bindAuthRepository(impl: AuthRepositoryImpl): AuthRepository
 }

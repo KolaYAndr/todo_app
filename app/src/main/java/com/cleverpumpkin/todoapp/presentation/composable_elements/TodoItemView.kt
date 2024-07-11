@@ -11,9 +11,6 @@ import androidx.compose.material3.CheckboxDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
@@ -23,7 +20,7 @@ import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.text.withStyle
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.cleverpumpkin.todoapp.R
@@ -36,8 +33,8 @@ import java.time.format.DateTimeFormatter
 @Composable
 fun TodoItemView(
     item: TodoItem,
-    checked: MutableState<Boolean>,
     formatter: DateTimeFormatter,
+    onCheckedChange: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     Row(
@@ -47,10 +44,9 @@ fun TodoItemView(
     ) {
         Checkbox(
             modifier = Modifier.size(24.dp),
-            checked = checked.value,
+            checked = item.isDone,
             onCheckedChange = {
-                checked.value = it
-                item.isDone = it
+                onCheckedChange()
             },
             colors = CheckboxDefaults.colors(
                 checkedColor = TodoAppTheme.colorScheme.green,
@@ -126,25 +122,26 @@ fun TodoItemView(
     }
 }
 
-@Preview
+@PreviewLightDark
 @Composable
 fun PreviewItem() {
-    val formatter = DateTimeFormatter.ofPattern("dd MM yyyy")
-    val item = TodoItem(
-        id = "",
-        text = "Ya",
-        importance = Importance.Urgent,
-        isDone = false,
-        createdAt = LocalDateTime.now(),
-        deadline = LocalDateTime.now()
-    )
-    val checked = remember { mutableStateOf(item.isDone) }
-    TodoItemView(
-        item,
-        checked,
-        formatter,
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(vertical = 12.dp, horizontal = 16.dp)
-    )
+    TodoAppTheme {
+        val formatter = DateTimeFormatter.ofPattern("dd MM yyyy")
+        val item = TodoItem(
+            id = "",
+            text = "Ya",
+            importance = Importance.Urgent,
+            isDone = false,
+            createdAt = LocalDateTime.now(),
+            deadline = LocalDateTime.now()
+        )
+        TodoItemView(
+            item,
+            formatter,
+            {},
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(vertical = 12.dp, horizontal = 16.dp)
+        )
+    }
 }

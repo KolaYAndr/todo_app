@@ -24,7 +24,7 @@ val Typography = AppTypography(
         fontSize = 14.sp,
         lineHeight = 24.sp,
         letterSpacing = 0.16.sp,
-        fontWeight = FontWeight.Normal
+        fontWeight = FontWeight.Bold
     ),
     body = TextStyle(
         fontFamily = RobotoFamily,

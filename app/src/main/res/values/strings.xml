@@ -21,4 +21,13 @@
     <string name="mark_done">Mark done</string>
     <string name="ok">@android:string/ok</string>
     <string name="cancel">Cancel</string>
+    <string name="new_todo">New</string>
+    <string name="refresh">Refresh</string>
+    <string name="network_error_404">Resource not found</string>
+    <string name="network_error_401">Unauthorized access to resource</string>
+    <string name="network_error_403">Access forbidden</string>
+    <string name="network_error_408">Request timeout</string>
+    <string name="network_error_500">Internal server error</string>
+    <string name="yandex_login">Yandex login</string>
+    <string name="api_key_login">Api key login</string>
 </resources>

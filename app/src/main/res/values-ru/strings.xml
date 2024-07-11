@@ -21,4 +21,13 @@
     <string name="mark_done">Отметить выполненным</string>
     <string name="ok">@android:string/ok</string>
     <string name="cancel">Отменить</string>
+    <string name="new_todo">Новое</string>
+    <string name="refresh">Обновить</string>
+    <string name="network_error_404">Ресурс не найден</string>
+    <string name="network_error_401">Неавторизованный доступ к ресурсу</string>
+    <string name="network_error_403">Доступ запрещен</string>
+    <string name="network_error_408">Превышено время ожидания запроса</string>
+    <string name="network_error_500">Внутренняя ошибка сервера</string>
+    <string name="yandex_login">Вход через яндекс</string>
+    <string name="api_key_login">Вход через ключ апи</string>
 </resources>

@@ -11,22 +11,25 @@ import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.FloatingActionButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.cleverpumpkin.todoapp.R
 import com.cleverpumpkin.todoapp.domain.models.TodoItem
+import com.cleverpumpkin.todoapp.presentation.screens.todo_list_screen.composables.RefreshBlock
 import com.cleverpumpkin.todoapp.presentation.screens.todo_list_screen.composables.CollapsingTopAppBar
 import com.cleverpumpkin.todoapp.presentation.screens.todo_list_screen.composables.TodoList
 import com.cleverpumpkin.todoapp.presentation.theme.TodoAppTheme
 import com.cleverpumpkin.todoapp.presentation.theme.White
+import java.time.format.DateTimeFormatter
+import java.time.format.FormatStyle
+
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -36,15 +39,18 @@ fun TodoListScreen(
     onAddItem: () -> Unit,
     onNavigate: (String) -> Unit,
     onFilter: () -> Unit,
+    onCheck: (TodoItem) -> Unit,
+    onRefresh: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     val topAppBarState = rememberTopAppBarState()
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior(topAppBarState)
     val uiState = state.value
+    val formatter = remember { DateTimeFormatter.ofLocalizedDate(FormatStyle.MEDIUM) }
     Scaffold(
         modifier = modifier.background(TodoAppTheme.colorScheme.backPrimary),
         topBar = {
-            AnimatedVisibility(visible = uiState.errorMessage == null) {
+            AnimatedVisibility(visible = uiState.errorCode == null) {
                 CollapsingTopAppBar(
                     scrollBehavior = scrollBehavior,
                     modifier = Modifier.fillMaxWidth(),
@@ -55,7 +61,7 @@ fun TodoListScreen(
             }
         },
         floatingActionButton = {
-            AnimatedVisibility(visible = uiState.errorMessage == null) {
+            AnimatedVisibility(visible = uiState.errorCode == null) {
                 FloatingActionButton(
                     onClick = { onAddItem() },
                     containerColor = TodoAppTheme.colorScheme.blue,
@@ -71,7 +77,7 @@ fun TodoListScreen(
             }
         }
     ) { paddingValues ->
-        when (uiState.errorMessage) {
+        when (uiState.errorCode) {
             null -> {
                 TodoList(
                     modifier = Modifier
@@ -80,18 +86,19 @@ fun TodoListScreen(
                         .background(TodoAppTheme.colorScheme.backPrimary),
                     scrollBehavior = scrollBehavior,
                     items = uiState.items,
-                    onEndToStartAction = { item -> onEndToStartAction(item) },
-                    onNavigate = { id -> onNavigate(id) }
+                    onDelete = { item -> onEndToStartAction(item) },
+                    onNavigate = { id -> onNavigate(id) },
+                    onCheck = { item -> onCheck(item) },
+                    onAddItem = { onAddItem() },
+                    formatter = formatter
                 )
             }
 
             else -> {
-                Text(
-                    text = uiState.errorMessage,
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(16.dp),
-                    textAlign = TextAlign.Center
+                RefreshBlock(
+                    errorCode = uiState.errorCode,
+                    onRefresh = { onRefresh() },
+                    modifier = Modifier.fillMaxSize()
                 )
             }
         }
