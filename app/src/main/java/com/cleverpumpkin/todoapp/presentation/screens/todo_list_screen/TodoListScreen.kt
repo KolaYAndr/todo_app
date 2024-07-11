@@ -15,17 +15,21 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.cleverpumpkin.todoapp.R
 import com.cleverpumpkin.todoapp.domain.models.TodoItem
-import com.cleverpumpkin.todoapp.presentation.composable_elements.RefreshBlock
+import com.cleverpumpkin.todoapp.presentation.screens.todo_list_screen.composables.RefreshBlock
 import com.cleverpumpkin.todoapp.presentation.screens.todo_list_screen.composables.CollapsingTopAppBar
 import com.cleverpumpkin.todoapp.presentation.screens.todo_list_screen.composables.TodoList
 import com.cleverpumpkin.todoapp.presentation.theme.TodoAppTheme
 import com.cleverpumpkin.todoapp.presentation.theme.White
+import java.time.format.DateTimeFormatter
+import java.time.format.FormatStyle
+
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -42,6 +46,7 @@ fun TodoListScreen(
     val topAppBarState = rememberTopAppBarState()
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior(topAppBarState)
     val uiState = state.value
+    val formatter = remember { DateTimeFormatter.ofLocalizedDate(FormatStyle.MEDIUM) }
     Scaffold(
         modifier = modifier.background(TodoAppTheme.colorScheme.backPrimary),
         topBar = {
@@ -84,7 +89,8 @@ fun TodoListScreen(
                     onDelete = { item -> onEndToStartAction(item) },
                     onNavigate = { id -> onNavigate(id) },
                     onCheck = { item -> onCheck(item) },
-                    onAddItem = { onAddItem() }
+                    onAddItem = { onAddItem() },
+                    formatter = formatter
                 )
             }
 

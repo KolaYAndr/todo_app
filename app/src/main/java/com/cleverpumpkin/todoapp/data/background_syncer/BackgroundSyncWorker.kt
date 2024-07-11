@@ -1,26 +1,29 @@
-package com.cleverpumpkin.todoapp.data.remote
+package com.cleverpumpkin.todoapp.data.background_syncer
 
 import android.content.Context
+import androidx.hilt.work.HiltWorker
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
 import com.cleverpumpkin.todoapp.domain.models.Response
 import com.cleverpumpkin.todoapp.domain.repository.TodoItemsRepository
-import javax.inject.Inject
+import dagger.assisted.Assisted
+import dagger.assisted.AssistedInject
 
 /**
  * Worker class responsible for background synchronization of todo items.
  */
-
-class BackgroundSyncWorker(context: Context, workerParams: WorkerParameters) :
+@HiltWorker
+class BackgroundSyncWorker @AssistedInject constructor(
+    private val repository: TodoItemsRepository,
+    @Assisted context: Context,
+    @Assisted workerParams: WorkerParameters
+) :
     CoroutineWorker(context, workerParams) {
-
-    @Inject
-    lateinit var repository: TodoItemsRepository
 
     override suspend fun doWork(): Result {
         val response = repository.fetchTodoItems()
         return when (response) {
-            is Response.Failure -> Result.retry()
+            is Response.Failure -> Result.failure()
             is Response.Success -> Result.success()
         }
     }

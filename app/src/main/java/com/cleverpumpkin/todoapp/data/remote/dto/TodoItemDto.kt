@@ -23,6 +23,9 @@ data class TodoItemDto(
     @SerialName("color")
     val color: String? = null,
 
+    @SerialName("files")
+    val files: String? = null,
+
     @SerialName("created_at")
     val createdAt: Long,
 

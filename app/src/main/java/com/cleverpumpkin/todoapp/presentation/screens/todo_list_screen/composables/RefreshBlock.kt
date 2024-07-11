@@ -1,4 +1,4 @@
-package com.cleverpumpkin.todoapp.presentation.composable_elements
+package com.cleverpumpkin.todoapp.presentation.screens.todo_list_screen.composables
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -11,7 +11,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import com.cleverpumpkin.todoapp.R
+import com.cleverpumpkin.todoapp.presentation.utils.getErrorStringResource
+import com.cleverpumpkin.todoapp.presentation.composable_elements.RefreshButton
 import com.cleverpumpkin.todoapp.presentation.theme.TodoAppTheme
 
 @Composable
@@ -24,14 +25,7 @@ fun RefreshBlock(errorCode: Int, onRefresh: () -> Unit, modifier: Modifier = Mod
     ) {
         Text(
             text = stringResource(
-                id = when (errorCode) {
-                    404 -> R.string.network_error_404
-                    401 -> R.string.network_error_401
-                    403 -> R.string.network_error_403
-                    408 -> R.string.network_error_408
-                    500 -> R.string.network_error_500
-                    else -> R.string.unexpected_error
-                }
+                id = getErrorStringResource(errorCode)
             ),
             modifier = Modifier
                 .padding(16.dp),

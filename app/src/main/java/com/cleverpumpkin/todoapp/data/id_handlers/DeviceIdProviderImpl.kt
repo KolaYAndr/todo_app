@@ -13,10 +13,9 @@ import javax.inject.Inject
 class DeviceIdProviderImpl @Inject constructor(
     private val prefs: SharedPreferences,
     private val idGenerator: IdGenerator
-) :
-    DeviceIdProvider {
+) : DeviceIdProvider {
 
-    var id
+    private var id
         get() = prefs.getString(PreferenceKeys.DEVICE_ID, null)
         set(value) {
             prefs.edit().putString(PreferenceKeys.DEVICE_ID, value).apply()

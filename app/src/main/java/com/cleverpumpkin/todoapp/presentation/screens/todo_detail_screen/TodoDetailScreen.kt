@@ -42,15 +42,17 @@ import com.cleverpumpkin.todoapp.R
 import com.cleverpumpkin.todoapp.domain.models.Importance
 import com.cleverpumpkin.todoapp.presentation.composable_elements.DeleteButton
 import com.cleverpumpkin.todoapp.presentation.composable_elements.InputField
-import com.cleverpumpkin.todoapp.presentation.composable_elements.RefreshBlock
+import com.cleverpumpkin.todoapp.presentation.screens.todo_list_screen.composables.RefreshBlock
 import com.cleverpumpkin.todoapp.presentation.screens.todo_detail_screen.composables.DeadlineBlock
 import com.cleverpumpkin.todoapp.presentation.screens.todo_detail_screen.composables.ImportanceBlock
 import com.cleverpumpkin.todoapp.presentation.screens.todo_detail_screen.composables.UsualTopAppBar
 import com.cleverpumpkin.todoapp.presentation.theme.TodoAppTheme
+import com.cleverpumpkin.todoapp.presentation.utils.getErrorStringResource
 import kotlinx.coroutines.launch
 import java.time.LocalDateTime
 import java.time.ZoneOffset
 import java.time.format.DateTimeFormatter
+import java.time.format.FormatStyle
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -78,14 +80,7 @@ fun TodoDetailScreen(
         snackbarHost = {
             if (uiState.errorCode != null) {
                 val errorMessage = stringResource(
-                    id = when (uiState.errorCode) {
-                        404 -> R.string.network_error_404
-                        401 -> R.string.network_error_401
-                        403 -> R.string.network_error_403
-                        408 -> R.string.network_error_408
-                        500 -> R.string.network_error_500
-                        else -> R.string.unexpected_error
-                    }
+                    id = getErrorStringResource(uiState.errorCode)
                 )
                 val actionMessage = stringResource(id = R.string.refresh)
                 SnackbarHost(hostState = snackbarHostState)
@@ -190,7 +185,7 @@ fun TodoDetailScreen(
 
                     val datePickerState = rememberDatePickerState()
                     val showDatePicker = remember { mutableStateOf(false) }
-                    val formatter = DateTimeFormatter.ofPattern("dd MM yyyy")
+                    val formatter = remember { DateTimeFormatter.ofLocalizedDate(FormatStyle.MEDIUM) }
                     val pickedDate =
                         remember { mutableStateOf("") }
                     if (uiState.deadline != null) pickedDate.value =

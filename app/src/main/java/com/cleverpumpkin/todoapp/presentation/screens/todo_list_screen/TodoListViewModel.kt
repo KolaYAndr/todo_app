@@ -2,11 +2,14 @@ package com.cleverpumpkin.todoapp.presentation.screens.todo_list_screen
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.cleverpumpkin.todoapp.domain.connectivity_observer.ConnectivityObserver
+import com.cleverpumpkin.todoapp.domain.connectivity_observer.Status
 import com.cleverpumpkin.todoapp.domain.models.Response
 import com.cleverpumpkin.todoapp.domain.models.TodoItem
 import com.cleverpumpkin.todoapp.domain.repository.TodoItemsRepository
 import com.cleverpumpkin.todoapp.domain.use_case.BackgroundSyncUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -23,7 +26,8 @@ import javax.inject.Inject
 @HiltViewModel
 class TodoListViewModel @Inject constructor(
     private val repository: TodoItemsRepository,
-    private val backgroundSyncUseCase: BackgroundSyncUseCase
+    private val backgroundSyncUseCase: BackgroundSyncUseCase,
+    private val connectivityObserver: ConnectivityObserver
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(TodoListUiState())
@@ -32,6 +36,15 @@ class TodoListViewModel @Inject constructor(
     init {
         getTodos()
         scheduleSync()
+        observeNetworkState()
+    }
+
+    private fun observeNetworkState() {
+        viewModelScope.launch(Dispatchers.IO) {
+            connectivityObserver.observe().collectLatest { status ->
+                processConnectivity(status)
+            }
+        }
     }
 
     private fun scheduleSync() {
@@ -83,7 +96,17 @@ class TodoListViewModel @Inject constructor(
                 _uiState.update { it.copy(errorCode = response.exceptionCode) }
                 refresh()
             }
+
             is Response.Success -> onSuccessAction?.invoke()
+        }
+    }
+
+    private fun processConnectivity(status: Status) {
+        when (status) {
+            Status.Available -> if (connectivityObserver.wasPreviouslyOffline()) {
+                getTodos()
+            }
+            else -> Unit
         }
     }
 }

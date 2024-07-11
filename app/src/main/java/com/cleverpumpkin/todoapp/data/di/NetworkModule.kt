@@ -1,8 +1,10 @@
 package com.cleverpumpkin.todoapp.data.di
 
 import android.util.Log
+import com.cleverpumpkin.todoapp.data.connectivity_observer.NetworkObserver
 import com.cleverpumpkin.todoapp.data.remote.api.TodoApi
 import com.cleverpumpkin.todoapp.data.remote.api.TodoApiImpl
+import com.cleverpumpkin.todoapp.domain.connectivity_observer.ConnectivityObserver
 import com.cleverpumpkin.todoapp.domain.repository.AuthRepository
 import dagger.Binds
 import dagger.Module
@@ -18,6 +20,7 @@ import io.ktor.client.plugins.logging.LogLevel
 import io.ktor.client.plugins.logging.Logger
 import io.ktor.client.plugins.logging.Logging
 import io.ktor.client.request.header
+import io.ktor.http.ContentType
 import io.ktor.http.HttpHeaders
 import io.ktor.serialization.kotlinx.json.json
 import javax.inject.Singleton
@@ -25,6 +28,10 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 interface NetworkModule {
+
+    @Binds
+    @Singleton
+    fun bindNetworkObserver(impl: NetworkObserver): ConnectivityObserver
 
     @Binds
     @Singleton
@@ -56,8 +63,8 @@ interface NetworkModule {
                 }
                 install(DefaultRequest) {
                     header(HttpHeaders.Authorization, authRepository.getToken())
-                    header(HttpHeaders.ContentType, "application/json")
-                    header(HttpHeaders.Accept, "application/json")
+                    header(HttpHeaders.ContentType, ContentType.Application.Json)
+                    header(HttpHeaders.Accept, ContentType.Application.Json)
                 }
             }
         }

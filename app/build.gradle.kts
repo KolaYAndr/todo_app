@@ -73,8 +73,9 @@ dependencies {
     //Hilt
     implementation(libs.hilt.android)
     implementation(libs.hilt.navigation)
+    implementation(libs.hilt.work)
     ksp(libs.hilt.compiler)
-
+    ksp(libs.dagger.hilt.compiler)
 
     //Ktor
     implementation(libs.ktor.client.core)

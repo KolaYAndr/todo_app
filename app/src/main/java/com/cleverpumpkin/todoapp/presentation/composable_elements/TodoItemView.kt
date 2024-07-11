@@ -11,8 +11,6 @@ import androidx.compose.material3.CheckboxDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
@@ -35,7 +33,6 @@ import java.time.format.DateTimeFormatter
 @Composable
 fun TodoItemView(
     item: TodoItem,
-    checked: Boolean,
     formatter: DateTimeFormatter,
     onCheckedChange: () -> Unit,
     modifier: Modifier = Modifier
@@ -47,7 +44,7 @@ fun TodoItemView(
     ) {
         Checkbox(
             modifier = Modifier.size(24.dp),
-            checked = checked,
+            checked = item.isDone,
             onCheckedChange = {
                 onCheckedChange()
             },
@@ -138,10 +135,8 @@ fun PreviewItem() {
             createdAt = LocalDateTime.now(),
             deadline = LocalDateTime.now()
         )
-        val checked = remember { mutableStateOf(item.isDone) }
         TodoItemView(
             item,
-            checked.value,
             formatter,
             {},
             modifier = Modifier
