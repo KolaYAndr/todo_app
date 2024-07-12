@@ -13,12 +13,13 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
-import com.cleverpumpkin.todoapp.presentation.auth_screen.AuthScreen
-import com.cleverpumpkin.todoapp.presentation.auth_screen.AuthViewModel
-import com.cleverpumpkin.todoapp.presentation.screens.todo_detail_screen.TodoDetailScreen
-import com.cleverpumpkin.todoapp.presentation.screens.todo_detail_screen.TodoDetailViewModel
-import com.cleverpumpkin.todoapp.presentation.screens.todo_list_screen.TodoListScreen
-import com.cleverpumpkin.todoapp.presentation.screens.todo_list_screen.TodoListViewModel
+import com.cleverpumpkin.auth.auth_screen.AuthScreen
+import com.cleverpumpkin.auth.auth_screen.AuthViewModel
+import com.cleverpumpkin.cor.presentation.navigation.NavArgs
+import com.cleverpumpkin.cor.presentation.navigation.NavRoutes
+import com.cleverpumpkin.todo.presentation.screens.todo_detail_screen.TodoDetailScreen
+import com.cleverpumpkin.todo.presentation.screens.todo_list_screen.TodoListScreen
+import com.cleverpumpkin.todo.presentation.screens.todo_list_screen.TodoListViewModel
 import com.yandex.authsdk.YandexAuthLoginOptions
 import com.yandex.authsdk.YandexAuthOptions
 import com.yandex.authsdk.YandexAuthSdk
@@ -71,8 +72,10 @@ fun Navigation(navController: NavHostController) {
                 }
             )
         ) {
-            val todoDetailViewModel = hiltViewModel<TodoDetailViewModel>()
+            val todoDetailViewModel = hiltViewModel<com.cleverpumpkin.todo.presentation.screens.todo_detail_screen.TodoDetailViewModel>()
             val state = todoDetailViewModel.uiState.collectAsStateWithLifecycle()
+            val id = it.arguments?.getString(NavArgs.TODO_ID) ?: NavArgs.CREATE_TODO
+            todoDetailViewModel.findItem(id)
             TodoDetailScreen(
                 state = state,
                 onSave = {

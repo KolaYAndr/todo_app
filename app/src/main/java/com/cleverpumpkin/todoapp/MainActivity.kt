@@ -5,8 +5,8 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.navigation.compose.rememberNavController
+import com.cleverpumpkin.cor.presentation.theme.TodoAppTheme
 import com.cleverpumpkin.todoapp.presentation.navigation.Navigation
-import com.cleverpumpkin.todoapp.presentation.theme.TodoAppTheme
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint

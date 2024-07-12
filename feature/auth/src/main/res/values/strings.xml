@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="yandex_login">Yandex login</string>
+    <string name="api_key_login">Api key login</string>
+</resources>
