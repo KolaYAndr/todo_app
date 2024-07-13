@@ -1,4 +1,4 @@
-package com.cleverpumpkin.todo.domain.mapper
+package com.cleverpumpkin.todo.domain.mappers
 
 import com.cleverpumpkin.networ.domain.dto.TodoItemDto
 import com.cleverpumpkin.todo.domain.todo_model.Importance.*

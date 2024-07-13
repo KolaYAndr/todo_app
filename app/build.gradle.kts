@@ -80,22 +80,6 @@ dependencies {
     ksp(libs.hilt.compiler)
     ksp(libs.dagger.hilt.compiler)
 
-    //Ktor
-    implementation(libs.ktor.client.core)
-    implementation(libs.ktor.client.android)
-    implementation(libs.ktor.client.serialization)
-    implementation(libs.ktor.client.logging)
-    implementation(libs.ktor.client.content.negotiation)
-    implementation(libs.ktor.serialization.kotlinx.json)
-
-    //Kotlinx Serialization
-    implementation(libs.kotlinx.serialization.json)
-
     //Yandex Auth
     implementation(libs.yandex.android)
-
-    //Room
-    implementation(libs.room.runtime)
-    ksp(libs.room.compiler)
-    implementation(libs.room.ktx)
 }

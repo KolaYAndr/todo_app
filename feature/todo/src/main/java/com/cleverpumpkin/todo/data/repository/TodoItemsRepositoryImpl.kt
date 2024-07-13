@@ -2,15 +2,17 @@ package com.cleverpumpkin.todo.data.repository
 
 import android.content.SharedPreferences
 import com.cleverpumpkin.cor.data.preference.PreferenceKeys
+import com.cleverpumpkin.cor.id_handlers.DeviceIdProvider
+import com.cleverpumpkin.database.data.TodoDao
 import com.cleverpumpkin.networ.domain.api.TodoApi
 import com.cleverpumpkin.networ.domain.response_wrapper.Response
 import com.cleverpumpkin.networ.domain.responses.AddItemResponse
 import com.cleverpumpkin.networ.domain.responses.ChangeItemResponse
 import com.cleverpumpkin.networ.domain.responses.DeleteItemByIdResponse
-import com.cleverpumpkin.networ.domain.responses.GetItemByIdResponse
 import com.cleverpumpkin.networ.domain.responses.GetItemListResponse
-import com.cleverpumpkin.todo.domain.mapper.toDomain
-import com.cleverpumpkin.todo.domain.mapper.toDto
+import com.cleverpumpkin.todo.domain.mappers.toDomain
+import com.cleverpumpkin.todo.domain.mappers.toDto
+import com.cleverpumpkin.todo.domain.mappers.toEntity
 import com.cleverpumpkin.todo.domain.repository.TodoItemsRepository
 import com.cleverpumpkin.todo.domain.todo_model.TodoItem
 import kotlinx.coroutines.Dispatchers
@@ -28,74 +30,100 @@ import javax.inject.Inject
 class TodoItemsRepositoryImpl @Inject constructor(
     private val api: TodoApi,
     private val preferences: SharedPreferences,
-    private val deviceIdProvider: com.cleverpumpkin.cor.id_handlers.DeviceIdProvider
+    private val deviceIdProvider: DeviceIdProvider,
+    private val dao: TodoDao
 ) : TodoItemsRepository {
-
     private val _todoItemsFlow = MutableStateFlow<List<TodoItem>>(emptyList())
     override val todoItemsFlow: StateFlow<List<TodoItem>> get() = _todoItemsFlow.asStateFlow()
 
     override suspend fun fetchTodoItems(): Response<GetItemListResponse> =
         withContext(Dispatchers.IO) {
-            val revision = preferences.getInt(PreferenceKeys.REVISION, 0).toString()
-            val token = preferences.getString(PreferenceKeys.AUTH_KEY, "")!!
+            val revision = getRevision()
+            val token = getToken()
             val response = api.getItems(revision, token)
+
             if (response is Response.Success) {
                 rewriteRevision(response.result.revision)
-                _todoItemsFlow.update { response.result.items.map { it.toDomain() } }
+                dao.upsert(response.result.items.map { it.toEntity() })
+                _todoItemsFlow.update {
+                    dao.getAll().filter { !it.isDeleted }.map { it.toDomain() }
+                }
             }
             response
         }
 
     override suspend fun addTodoItem(item: TodoItem): Response<AddItemResponse> =
         withContext(Dispatchers.IO) {
-            val revision = preferences.getInt(PreferenceKeys.REVISION, 0).toString()
-            val token = preferences.getString(PreferenceKeys.AUTH_KEY, "")!!
-            val response =
-                api.addItem(item = item.toDto(deviceIdProvider.provideDeviceId()), revision, token)
+            val lastUpdatedBy = deviceIdProvider.provideDeviceId()
+            dao.upsert(item.toEntity(lastUpdatedBy))
+            _todoItemsFlow.update {
+                dao.getAll().filter { !it.isDeleted }.map { it.toDomain() }
+            }
+
+            val revision = getRevision()
+            val token = getToken()
+            val response = api.addItem(item.toDto(lastUpdatedBy), revision, token)
+
             if (response is Response.Success) {
                 rewriteRevision(response.result.revision)
             }
-            fetchTodoItems()
             response
         }
 
-
-    override suspend fun deleteTodoItem(itemId: String): Response<DeleteItemByIdResponse> =
+    override suspend fun deleteTodoItem(item: TodoItem): Response<DeleteItemByIdResponse> =
         withContext(Dispatchers.IO) {
-            val revision = preferences.getInt(PreferenceKeys.REVISION, 0).toString()
-            val token = preferences.getString(PreferenceKeys.AUTH_KEY, "")!!
-            val response = api.deleteItemById(itemId, revision, token)
+            val lastUpdatedBy = deviceIdProvider.provideDeviceId()
+            dao.upsert(item.toEntity(lastUpdatedBy).copy(isDeleted = true))
+            _todoItemsFlow.update {
+                dao.getAll().filter { !it.isDeleted }.map { it.toDomain() }
+            }
+
+            val revision = getRevision()
+            val token = getToken()
+            val response = api.deleteItemById(item.id, revision, token)
+
             if (response is Response.Success) {
                 rewriteRevision(response.result.revision)
             }
-            fetchTodoItems()
             response
         }
 
-
-    override suspend fun findItemById(id: String): Response<GetItemByIdResponse> =
-        withContext(Dispatchers.IO) {
-            val revision = preferences.getInt(PreferenceKeys.REVISION, 0).toString()
-            val token = preferences.getString(PreferenceKeys.AUTH_KEY, "")!!
-            val response = api.getItemById(id, revision, token)
-            if (response is Response.Success) {
-                rewriteRevision(response.result.revision)
-            }
-            fetchTodoItems()
-            response
-        }
+    override suspend fun findItemById(id: String): TodoItem = withContext(Dispatchers.IO) {
+        dao.findItem(id).toDomain()
+    }
 
     override suspend fun updateTodoItem(item: TodoItem): Response<ChangeItemResponse> =
         withContext(Dispatchers.IO) {
-            val revision = preferences.getInt(PreferenceKeys.REVISION, 0).toString()
-            val token = preferences.getString(PreferenceKeys.AUTH_KEY, "")!!
-            val response = api.changeItem(item.toDto(deviceIdProvider.provideDeviceId()), revision, token)
+            val lastUpdatedBy = deviceIdProvider.provideDeviceId()
+            dao.upsert(item.toEntity(lastUpdatedBy))
+            _todoItemsFlow.update {
+                dao.getAll().filter { !it.isDeleted }.map { it.toDomain() }
+            }
+
+            val revision = getRevision()
+            val token = getToken()
+            val response = api.changeItem(item.toDto(lastUpdatedBy), revision, token)
+
             if (response is Response.Success) {
                 rewriteRevision(response.result.revision)
             }
-            fetchTodoItems()
             response
         }
+
+    override suspend fun uploadTodoItems() {
+        withContext(Dispatchers.IO) {
+            val items = dao.getAll()
+            val undeletedItems = items.filter { !it.isDeleted }.map { it.toDto() }
+            val revision = getRevision()
+            val token = getToken()
+            api.updateItemList(undeletedItems, revision, token)
+        }
+    }
+
+
+    private fun getRevision(): String = preferences.getInt(PreferenceKeys.REVISION, 0).toString()
+
+    private fun getToken(): String = preferences.getString(PreferenceKeys.AUTH_KEY, "")!!
 
 
     private fun rewriteRevision(revision: Int) {

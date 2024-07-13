@@ -7,6 +7,7 @@ import com.cleverpumpkin.networ.domain.connectivity_observer.Status
 import com.cleverpumpkin.networ.domain.response_wrapper.Response
 import com.cleverpumpkin.todo.data.task_scheduler.BackgroundTaskScheduler
 import com.cleverpumpkin.todo.domain.repository.TodoItemsRepository
+import com.cleverpumpkin.todo.domain.todo_model.TodoItem
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -53,14 +54,13 @@ class TodoListViewModel @Inject constructor(
     private fun getTodos() = viewModelScope.launch {
         processResponse(repository.fetchTodoItems()) {
             viewModelScope.launch {
-                repository.todoItemsFlow.combine(_uiState) { items: List<com.cleverpumpkin.todo.domain.todo_model.TodoItem>, state: TodoListUiState ->
+                repository.todoItemsFlow.combine(_uiState) { items: List<TodoItem>, state: TodoListUiState ->
                     val filteredItems =
                         if (state.isFiltered) items.filter { item -> !item.isDone } else items
                     filteredItems
                 }.collectLatest { filteredItems ->
                     val count = filteredItems.count { it.isDone }
-                    val completed = maxOf(_uiState.value.completed, count)
-                    _uiState.update { it.copy(items = filteredItems, completed = completed) }
+                    _uiState.update { it.copy(items = filteredItems, completed = count) }
                 }
             }
         }
@@ -76,15 +76,15 @@ class TodoListViewModel @Inject constructor(
         _uiState.update { it.copy(isFiltered = !it.isFiltered) }
     }
 
-    fun checkItem(todo: com.cleverpumpkin.todo.domain.todo_model.TodoItem) = viewModelScope.launch {
+    fun checkItem(todo: TodoItem) = viewModelScope.launch {
         processResponse(
             repository.updateTodoItem(todo.copy(isDone = !todo.isDone))
         )
     }
 
-    fun deleteItem(itemId: String) = viewModelScope.launch {
+    fun deleteItem(item: TodoItem) = viewModelScope.launch {
         processResponse(
-            repository.deleteTodoItem(itemId)
+            repository.deleteTodoItem(item)
         )
     }
 
@@ -103,6 +103,9 @@ class TodoListViewModel @Inject constructor(
         when (status) {
             Status.Available -> if (connectivityObserver.wasPreviouslyOffline()) {
                 refresh()
+                viewModelScope.launch {
+                    repository.uploadTodoItems()
+                }
             }
             else -> Unit
         }

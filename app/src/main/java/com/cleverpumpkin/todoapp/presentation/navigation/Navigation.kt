@@ -53,7 +53,7 @@ fun Navigation(navController: NavHostController) {
             val state = todoListViewModel.uiState.collectAsStateWithLifecycle()
             TodoListScreen(
                 state = state,
-                onEndToStartAction = { item -> todoListViewModel.deleteItem(item.id) },
+                onEndToStartAction = { item -> todoListViewModel.deleteItem(item) },
                 onAddItem = { navController.navigate("${NavRoutes.TODO_DETAIL_SCREEN}/${NavArgs.CREATE_TODO}") },
                 onNavigate = { id -> navController.navigate("${NavRoutes.TODO_DETAIL_SCREEN}/${id}") },
                 onFilter = { todoListViewModel.filter() },

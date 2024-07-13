@@ -1,14 +1,15 @@
-package com.cleverpumpkin.todo.domain.mapper
+package com.cleverpumpkin.todo.domain.mappers
 
 import com.cleverpumpkin.networ.domain.dto.TodoItemDto
+import com.cleverpumpkin.todo.domain.todo_model.Importance
 import com.cleverpumpkin.todo.domain.todo_model.TodoItem
 import java.time.ZoneOffset
 
 fun TodoItem.toDto(lastUpdatedBy: String): TodoItemDto {
     val importanceString = when (this.importance) {
-        com.cleverpumpkin.todo.domain.todo_model.Importance.Low -> "low"
-        com.cleverpumpkin.todo.domain.todo_model.Importance.Normal -> "basic"
-        com.cleverpumpkin.todo.domain.todo_model.Importance.Urgent -> "important"
+        Importance.Low -> "low"
+        Importance.Normal -> "basic"
+        Importance.Urgent -> "important"
     }
 
     return TodoItemDto(

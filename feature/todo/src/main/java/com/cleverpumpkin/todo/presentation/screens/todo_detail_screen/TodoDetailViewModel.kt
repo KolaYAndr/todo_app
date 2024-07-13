@@ -5,7 +5,8 @@ import androidx.lifecycle.viewModelScope
 import com.cleverpumpkin.cor.id_handlers.IdGenerator
 import com.cleverpumpkin.cor.presentation.navigation.NavArgs
 import com.cleverpumpkin.networ.domain.response_wrapper.Response
-import com.cleverpumpkin.todo.domain.mapper.toDomain
+import com.cleverpumpkin.todo.domain.todo_model.Importance
+import com.cleverpumpkin.todo.domain.todo_model.TodoItem
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -29,7 +30,7 @@ class TodoDetailViewModel @Inject constructor(
         TodoDetailUiState(
             id = "",
             text = "",
-            importance = com.cleverpumpkin.todo.domain.todo_model.Importance.Low,
+            importance = Importance.Low,
             createdAt = LocalDateTime.now(),
             isDone = false
         )
@@ -38,34 +39,18 @@ class TodoDetailViewModel @Inject constructor(
 
     fun findItem(id: String) = viewModelScope.launch {
         if (id != NavArgs.CREATE_TODO) {
-            when (val response = repository.findItemById(id)) {
-                is Response.Failure -> _uiState.update {
-                    TodoDetailUiState(
-                        errorCode = response.exceptionCode,
-                        id = "",
-                        text = "",
-                        importance = com.cleverpumpkin.todo.domain.todo_model.Importance.Low,
-                        createdAt = LocalDateTime.now(),
-                        isDone = false
-                    )
-                }
-
-                is Response.Success -> {
-                    val item = response.result.item.toDomain()
-                    _uiState.update {
-                        TodoDetailUiState(
-                            id = item.id,
-                            text = item.text,
-                            createdAt = item.createdAt,
-                            modifiedAt = item.modifiedAt,
-                            deadline = item.deadline,
-                            importance = item.importance,
-                            isDone = item.isDone
-                        )
-                    }
-                }
+            val item = repository.findItemById(id)
+            _uiState.update {
+                TodoDetailUiState(
+                    id = item.id,
+                    text = item.text,
+                    createdAt = item.createdAt,
+                    modifiedAt = item.modifiedAt,
+                    deadline = item.deadline,
+                    importance = item.importance,
+                    isDone = item.isDone
+                )
             }
-
         }
     }
 
@@ -73,10 +58,10 @@ class TodoDetailViewModel @Inject constructor(
         findItem(_uiState.value.id)
     }
 
-    private fun createTodo(): com.cleverpumpkin.todo.domain.todo_model.TodoItem {
+    private fun createTodo(): TodoItem {
         with(_uiState.value) {
             val todoId = if (id == "") idGenerator.generateId() else id
-            return com.cleverpumpkin.todo.domain.todo_model.TodoItem(
+            return TodoItem(
                 id = todoId,
                 importance = importance,
                 text = text,
@@ -88,7 +73,7 @@ class TodoDetailViewModel @Inject constructor(
         }
     }
 
-    fun selectImportance(selectedImportance: com.cleverpumpkin.todo.domain.todo_model.Importance) {
+    fun selectImportance(selectedImportance: Importance) {
         _uiState.update { it.copy(importance = selectedImportance) }
     }
 
@@ -109,7 +94,7 @@ class TodoDetailViewModel @Inject constructor(
     }
 
     fun deleteItem() = viewModelScope.launch {
-        processResponse(repository.deleteTodoItem(_uiState.value.id))
+        processResponse(repository.deleteTodoItem(createTodo()))
     }
 
     private fun processResponse(response: Response<*>, onSuccessAction: (() -> Unit)? = null) {
@@ -118,6 +103,7 @@ class TodoDetailViewModel @Inject constructor(
                 _uiState.update { it.copy(errorCode = response.exceptionCode) }
                 refresh()
             }
+
             is Response.Success -> onSuccessAction?.invoke()
         }
     }
