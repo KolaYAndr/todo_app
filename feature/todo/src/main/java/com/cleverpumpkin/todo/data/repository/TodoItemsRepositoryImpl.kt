@@ -120,7 +120,6 @@ class TodoItemsRepositoryImpl @Inject constructor(
         }
     }
 
-
     private fun getRevision(): String = preferences.getInt(PreferenceKeys.REVISION, 0).toString()
 
     private fun getToken(): String = preferences.getString(PreferenceKeys.AUTH_KEY, "")!!
