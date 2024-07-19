@@ -136,6 +136,7 @@ fun Navigation(navController: NavHostController, modifier: Modifier = Modifier) 
             val contextWrapper = remember { ContextThemeWrapper(context, R.style.Theme_TodoApp) }
             AboutScreen(
                 contextThemeWrapper = contextWrapper,
+                onNavigation = { navController.navigateUp() },
                 modifier = Modifier
                     .fillMaxSize()
                     .background(TodoAppTheme.colorScheme.backPrimary)

@@ -9,7 +9,8 @@
       "font_size": 18,
       "margins": {
         "top": 4
-      }
+      },
+      "text_color": "@{app_theme == 'light' ? '#000000' : '#ffffff'}"
     },
     "wanted_collapsed": {
       "type": "container",
@@ -178,7 +179,8 @@
                   "font_size": 24,
                   "margins": {
                     "top": 12
-                  }
+                  },
+                  "text_color": "@{app_theme == 'light' ? '#000000' : '#ffffff'}"
                 },
                 {
                   "type": "feature_text",
@@ -212,7 +214,7 @@
                       "color": "#28a8e9"
                     }
                   ],
-                  "font_color": "#000000",
+                  "text_color": "#ffffff",
                   "font_size": 20,
                   "margins": {
                     "top": 16,
@@ -267,7 +269,8 @@
                         "type": "fixed",
                         "value": 24
                       },
-                      "tint_color": "#4D000000",
+                      "tint_color": "@{app_theme == 'light' ? '#000000' : '#ffffff'}",
+                      "tint_mode": "multiply",
                       "margins": {
                         "end": 4
                       }
@@ -278,7 +281,8 @@
                       "font_size": 16,
                       "width": {
                         "type": "wrap_content"
-                      }
+                      },
+                      "text_color": "@{app_theme == 'light' ? '#000000' : '#ffffff'}"
                     }
                   ],
                   "actions": [

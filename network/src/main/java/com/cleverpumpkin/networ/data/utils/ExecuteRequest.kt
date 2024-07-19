@@ -20,7 +20,7 @@ suspend inline fun <reified T> HttpClient.executeRequest(
             Response.Success(typedResponse)
         } else Response.Failure(response.status.value)
     }
-    catch (e: UnknownHostException) {
+    catch (e: Exception) {
         return Response.Failure(0)
     }
 }

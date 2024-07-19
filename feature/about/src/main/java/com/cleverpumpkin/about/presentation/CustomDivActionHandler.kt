@@ -9,7 +9,7 @@ import com.yandex.div.core.DivViewFacade
 import com.yandex.div.json.expressions.ExpressionResolver
 import com.yandex.div2.DivAction
 
-class CustomDivActionHandler : DivActionHandler() {
+class CustomDivActionHandler(private val onNavigation: () -> Unit) : DivActionHandler() {
     override fun handleAction(
         action: DivAction,
         view: DivViewFacade,
@@ -34,7 +34,7 @@ class CustomDivActionHandler : DivActionHandler() {
             }
 
             "navigation" -> {
-                Toast.makeText(context, "Тут навигация", Toast.LENGTH_SHORT).show()
+                onNavigation()
                 true
             }
 
