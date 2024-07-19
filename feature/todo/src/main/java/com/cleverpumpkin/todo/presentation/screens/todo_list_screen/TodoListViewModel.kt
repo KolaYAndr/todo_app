@@ -26,7 +26,6 @@ import javax.inject.Inject
 @HiltViewModel
 class TodoListViewModel @Inject constructor(
     private val repository: TodoItemsRepository,
-    private val backgroundTaskScheduler: BackgroundTaskScheduler,
     private val connectivityObserver: ConnectivityObserver
 ) : ViewModel() {
 
@@ -35,7 +34,6 @@ class TodoListViewModel @Inject constructor(
 
     init {
         getTodos()
-        scheduleSync()
         observeNetworkState()
     }
 
@@ -45,10 +43,6 @@ class TodoListViewModel @Inject constructor(
                 processConnectivity(status)
             }
         }
-    }
-
-    private fun scheduleSync() {
-        backgroundTaskScheduler.sync()
     }
 
     private fun getTodos() = viewModelScope.launch {

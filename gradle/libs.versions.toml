@@ -20,7 +20,7 @@ yandexAuth = "3.1.1"
 roomVersion = "2.6.1"
 appcompat = "1.7.0"
 material = "1.12.0"
-coroutines = "1.7.3"
+divkit = "30.9.0"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -58,6 +58,10 @@ room-compiler = { group = "androidx.room", name = "room-compiler", version.ref =
 room-ktx = { group = "androidx.room", name = "room-ktx", version.ref = "roomVersion" }
 androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
 material = { group = "com.google.android.material", name = "material", version.ref = "material" }
+div = { group = "com.yandex.div", name = "div", version.ref = "divkit" }
+div-core = { group = "com.yandex.div", name = "div-core", version.ref = "divkit" }
+div-json = { group = "com.yandex.div", name = "div-json", version.ref = "divkit" }
+div-picasso = { group = "com.yandex.div", name = "picasso", version.ref = "divkit" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
@@ -66,5 +70,4 @@ ksp = { id = "com.google.devtools.ksp", version.ref = "kspVersion"}
 hilt = { id = "com.google.dagger.hilt.android", version.ref = "hiltVersion" }
 compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 kotlinxSerialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlinxSerialization" }
-android-dynamic-feature = { id = "com.android.dynamic-feature", version.ref = "agp" }
 android-library = { id = "com.android.library", version.ref = "agp" }

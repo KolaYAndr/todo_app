@@ -51,6 +51,7 @@ android {
 dependencies {
     implementation(project(":feature:todo"))
     implementation(project(":feature:auth"))
+    implementation(project(":feature:about"))
     implementation(project(":core"))
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)

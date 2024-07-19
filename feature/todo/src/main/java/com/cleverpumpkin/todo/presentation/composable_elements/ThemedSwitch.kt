@@ -10,14 +10,14 @@ import androidx.compose.ui.tooling.preview.PreviewLightDark
 import com.cleverpumpkin.cor.presentation.theme.TodoAppTheme
 
 @Composable
-fun DeadlineSwitch(
-    isDeadlineSet: Boolean,
+fun ThemedSwitch(
+    checked: Boolean,
     onSwitch: (Boolean) -> Unit,
     modifier: Modifier = Modifier
 ) {
     Switch(
         modifier = modifier,
-        checked = isDeadlineSet,
+        checked = checked,
         onCheckedChange = { onSwitch(it) },
         colors = SwitchDefaults.colors(
             checkedThumbColor = TodoAppTheme.colorScheme.blue,
@@ -34,8 +34,8 @@ fun DeadlineSwitch(
 fun PreviewSwitch() {
     TodoAppTheme {
         val isDeadline = false
-        DeadlineSwitch(
-            isDeadlineSet = isDeadline,
+        ThemedSwitch(
+            checked = isDeadline,
             onSwitch = {},
             modifier = Modifier.background(TodoAppTheme.colorScheme.backPrimary)
         )

@@ -12,6 +12,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.cleverpumpkin.cor.presentation.theme.TodoAppTheme
+import com.cleverpumpkin.todo.presentation.utils.getErrorStringResource
 
 @Composable
 fun RefreshBlock(errorCode: Int, onRefresh: () -> Unit, modifier: Modifier = Modifier) {
@@ -23,7 +24,7 @@ fun RefreshBlock(errorCode: Int, onRefresh: () -> Unit, modifier: Modifier = Mod
     ) {
         Text(
             text = stringResource(
-                id = com.cleverpumpkin.todo.presentation.utils.getErrorStringResource(errorCode)
+                id = getErrorStringResource(errorCode)
             ),
             modifier = Modifier
                 .padding(16.dp),

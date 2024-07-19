@@ -94,7 +94,9 @@ class TodoDetailViewModel @Inject constructor(
     }
 
     fun deleteItem() = viewModelScope.launch {
-        processResponse(repository.deleteTodoItem(createTodo()))
+        if (_uiState.value.id.isNotEmpty()) {
+            processResponse(repository.deleteTodoItem(createTodo()))
+        }
     }
 
     private fun processResponse(response: Response<*>, onSuccessAction: (() -> Unit)? = null) {

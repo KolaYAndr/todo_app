@@ -4,6 +4,8 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.ui.Modifier
 import androidx.navigation.compose.rememberNavController
 import com.cleverpumpkin.cor.presentation.theme.TodoAppTheme
 import com.cleverpumpkin.todoapp.presentation.navigation.Navigation
@@ -18,7 +20,7 @@ class MainActivity : ComponentActivity() {
         setContent {
             TodoAppTheme {
                 val navHostController = rememberNavController()
-                Navigation(navController = navHostController)
+                Navigation(navController = navHostController, modifier = Modifier.fillMaxSize())
             }
         }
     }

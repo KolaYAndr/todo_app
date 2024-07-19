@@ -37,6 +37,7 @@ fun TodoListScreen(
     onEndToStartAction: (TodoItem) -> Unit,
     onAddItem: () -> Unit,
     onNavigate: (String) -> Unit,
+    onNavigateToSettings: () -> Unit,
     onFilter: () -> Unit,
     onCheck: (TodoItem) -> Unit,
     onRefresh: () -> Unit,
@@ -54,6 +55,7 @@ fun TodoListScreen(
                     scrollBehavior = scrollBehavior,
                     modifier = Modifier.fillMaxWidth(),
                     onIconClick = { onFilter() },
+                    onSettingsIconClick = { onNavigateToSettings() },
                     isFiltered = uiState.isFiltered,
                     completed = uiState.completed
                 )
