@@ -21,7 +21,7 @@ roomVersion = "2.6.1"
 appcompat = "1.7.0"
 material = "1.12.0"
 divkit = "30.9.0"
-material3Android = "1.2.1"
+datastoreVersion = "1.1.1"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -63,6 +63,7 @@ div = { group = "com.yandex.div", name = "div", version.ref = "divkit" }
 div-core = { group = "com.yandex.div", name = "div-core", version.ref = "divkit" }
 div-json = { group = "com.yandex.div", name = "div-json", version.ref = "divkit" }
 div-picasso = { group = "com.yandex.div", name = "picasso", version.ref = "divkit" }
+datastore = { group = "androidx.datastore", name = "datastore-preferences", version.ref = "datastoreVersion" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

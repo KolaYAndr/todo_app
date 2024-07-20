@@ -84,4 +84,7 @@ dependencies {
 
     //Yandex Auth
     implementation(libs.yandex.android)
+
+    //Datastore
+    implementation(libs.datastore)
 }
