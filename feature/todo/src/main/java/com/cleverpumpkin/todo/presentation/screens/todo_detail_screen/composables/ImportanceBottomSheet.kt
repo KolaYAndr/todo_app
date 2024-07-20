@@ -22,7 +22,7 @@ import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
-import com.cleverpumpkin.cor.presentation.theme.TodoAppTheme
+import com.cleverpumpkin.core.presentation.theme.TodoAppTheme
 import com.cleverpumpkin.todo.R
 import com.cleverpumpkin.todo.domain.todo_model.Importance
 

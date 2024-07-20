@@ -13,7 +13,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
-import com.cleverpumpkin.cor.presentation.theme.TodoAppTheme
+import com.cleverpumpkin.core.presentation.theme.TodoAppTheme
 import com.cleverpumpkin.todo.R
 import com.cleverpumpkin.todo.presentation.composable_elements.ThemedSwitch
 

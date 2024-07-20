@@ -2,9 +2,9 @@ package com.cleverpumpkin.todo.presentation.screens.todo_detail_screen
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.cleverpumpkin.cor.id_handlers.IdGenerator
-import com.cleverpumpkin.cor.presentation.navigation.NavArgs
-import com.cleverpumpkin.networ.domain.response_wrapper.Response
+import com.cleverpumpkin.core.id_handlers.IdGenerator
+import com.cleverpumpkin.core.presentation.navigation.NavArgs
+import com.cleverpumpkin.network.domain.response_wrapper.Response
 import com.cleverpumpkin.todo.domain.todo_model.Importance
 import com.cleverpumpkin.todo.domain.todo_model.TodoItem
 import dagger.hilt.android.lifecycle.HiltViewModel

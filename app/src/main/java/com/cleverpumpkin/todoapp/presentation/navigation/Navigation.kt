@@ -7,6 +7,8 @@ import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -18,16 +20,19 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import com.cleverpumpkin.about.presentation.AboutScreen
+import com.cleverpumpkin.about.presentation.AboutScreenViewModel
 import com.cleverpumpkin.auth.auth_screen.AuthScreen
 import com.cleverpumpkin.auth.auth_screen.AuthViewModel
-import com.cleverpumpkin.cor.presentation.navigation.NavArgs
-import com.cleverpumpkin.cor.presentation.navigation.NavRoutes
-import com.cleverpumpkin.cor.presentation.theme.TodoAppTheme
+import com.cleverpumpkin.core.presentation.navigation.NavArgs
+import com.cleverpumpkin.core.presentation.navigation.NavRoutes
+import com.cleverpumpkin.core.presentation.theme.TodoAppTheme
 import com.cleverpumpkin.settings.presentation.SettingsScreen
+import com.cleverpumpkin.settings.presentation.SettingsScreenViewModel
 import com.cleverpumpkin.todo.presentation.screens.todo_detail_screen.TodoDetailScreen
 import com.cleverpumpkin.todo.presentation.screens.todo_list_screen.TodoListScreen
 import com.cleverpumpkin.todo.presentation.screens.todo_list_screen.TodoListViewModel
 import com.cleverpumpkin.todoapp.R
+import com.cleverpumpkin.todoapp.presentation.util.getThemeFlagByString
 import com.yandex.authsdk.YandexAuthLoginOptions
 import com.yandex.authsdk.YandexAuthOptions
 import com.yandex.authsdk.YandexAuthSdk
@@ -132,15 +137,22 @@ fun Navigation(navController: NavHostController, modifier: Modifier = Modifier) 
         }
 
         composable(route = NavRoutes.SETTINGS_SCREEN) {
+            val settingsScreenViewModel = hiltViewModel<SettingsScreenViewModel>()
+            val themeString by remember { mutableStateOf(settingsScreenViewModel.getThemeString()) }
             SettingsScreen(
                 modifier = Modifier
                     .fillMaxSize()
                     .background(TodoAppTheme.colorScheme.backPrimary),
-                onNavigation = { navController.navigate(NavRoutes.ABOUT_SCREEN) }
+                onNavigation = { navController.navigate(NavRoutes.ABOUT_SCREEN) },
+                onChangeTheme = { settingsScreenViewModel.setTheme(it)},
+                themeString = themeString
             )
         }
 
         composable(route = NavRoutes.ABOUT_SCREEN) {
+            val aboutViewModel = hiltViewModel<AboutScreenViewModel>()
+            val darkTheme = getThemeFlagByString(string = aboutViewModel.getThemeString())
+            val themeString = remember { mutableStateOf(if (darkTheme) "dark" else "light") }
             val context = LocalContext.current
             val contextWrapper = remember { ContextThemeWrapper(context, R.style.Theme_TodoApp) }
             AboutScreen(
@@ -148,7 +160,8 @@ fun Navigation(navController: NavHostController, modifier: Modifier = Modifier) 
                 onNavigation = { navController.navigateUp() },
                 modifier = Modifier
                     .fillMaxSize()
-                    .background(TodoAppTheme.colorScheme.backPrimary)
+                    .background(TodoAppTheme.colorScheme.backPrimary),
+                themeString = themeString.value
             )
         }
     }

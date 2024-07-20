@@ -1,6 +1,6 @@
 package com.cleverpumpkin.todo.domain.mappers
 
-import com.cleverpumpkin.networ.domain.dto.TodoItemDto
+import com.cleverpumpkin.network.domain.dto.TodoItemDto
 import com.cleverpumpkin.todo.domain.todo_model.Importance.*
 import com.cleverpumpkin.todo.domain.todo_model.TodoItem
 import java.time.LocalDateTime

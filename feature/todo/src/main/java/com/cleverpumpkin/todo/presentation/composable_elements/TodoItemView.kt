@@ -12,7 +12,7 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
-import com.cleverpumpkin.cor.presentation.theme.TodoAppTheme
+import com.cleverpumpkin.core.presentation.theme.TodoAppTheme
 import androidx.compose.material3.Text
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -27,6 +27,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.sp
 import com.cleverpumpkin.todo.R
+import com.cleverpumpkin.todo.domain.todo_model.Importance
 
 @Composable
 fun TodoItemView(
@@ -49,7 +50,7 @@ fun TodoItemView(
             colors = CheckboxDefaults.colors(
                 checkedColor = TodoAppTheme.colorScheme.green,
                 uncheckedColor = when (item.importance) {
-                    com.cleverpumpkin.todo.domain.todo_model.Importance.Urgent -> {
+                    Importance.Urgent -> {
                         TodoAppTheme.colorScheme.red
                     }
 
@@ -77,7 +78,7 @@ fun TodoItemView(
                             append(item.text)
                         }
                     } else {
-                        if (item.importance == com.cleverpumpkin.todo.domain.todo_model.Importance.Urgent) {
+                        if (item.importance == Importance.Urgent) {
                             withStyle(
                                 style = SpanStyle(
                                     color = TodoAppTheme.colorScheme.red,
@@ -87,7 +88,7 @@ fun TodoItemView(
                                 append("!! ")
                             }
                         }
-                        if (item.importance == com.cleverpumpkin.todo.domain.todo_model.Importance.Low) {
+                        if (item.importance == Importance.Low) {
                             withStyle(
                                 style = SpanStyle(
                                     color = TodoAppTheme.colorScheme.gray, fontSize = 20.sp
@@ -128,7 +129,7 @@ fun PreviewItem() {
         val item = com.cleverpumpkin.todo.domain.todo_model.TodoItem(
             id = "",
             text = "Ya",
-            importance = com.cleverpumpkin.todo.domain.todo_model.Importance.Urgent,
+            importance = Importance.Urgent,
             isDone = false,
             createdAt = LocalDateTime.now(),
             deadline = LocalDateTime.now()

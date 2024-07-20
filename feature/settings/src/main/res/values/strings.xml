@@ -2,4 +2,6 @@
 <resources>
     <string name="about_app">About app</string>
     <string name="settings">Settings</string>
+    <string name="restart_changes">Restart to see changes</string>
+    <string name="chosen_theme">Chosen theme</string>
 </resources>

@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="about_app">О приложении</string>
+    <string name="settings">Настройки</string>
+    <string name="restart_changes">Перезапустите, чтобы изменения вступили в силу</string>
+    <string name="chosen_theme">Выбранная тема</string>
+</resources>

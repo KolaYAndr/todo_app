@@ -1,15 +1,15 @@
 package com.cleverpumpkin.todo.data.repository
 
 import android.content.SharedPreferences
-import com.cleverpumpkin.cor.data.preference.PreferenceKeys
-import com.cleverpumpkin.cor.id_handlers.DeviceIdProvider
+import com.cleverpumpkin.core.data.preference.PreferenceKeys
+import com.cleverpumpkin.core.id_handlers.DeviceIdProvider
 import com.cleverpumpkin.database.data.TodoDao
-import com.cleverpumpkin.networ.domain.api.TodoApi
-import com.cleverpumpkin.networ.domain.response_wrapper.Response
-import com.cleverpumpkin.networ.domain.responses.AddItemResponse
-import com.cleverpumpkin.networ.domain.responses.ChangeItemResponse
-import com.cleverpumpkin.networ.domain.responses.DeleteItemByIdResponse
-import com.cleverpumpkin.networ.domain.responses.GetItemListResponse
+import com.cleverpumpkin.network.domain.api.TodoApi
+import com.cleverpumpkin.network.domain.response_wrapper.Response
+import com.cleverpumpkin.network.domain.responses.AddItemResponse
+import com.cleverpumpkin.network.domain.responses.ChangeItemResponse
+import com.cleverpumpkin.network.domain.responses.DeleteItemByIdResponse
+import com.cleverpumpkin.network.domain.responses.GetItemListResponse
 import com.cleverpumpkin.todo.data.task_scheduler.BackgroundTaskScheduler
 import com.cleverpumpkin.todo.domain.mappers.toDomain
 import com.cleverpumpkin.todo.domain.mappers.toDto

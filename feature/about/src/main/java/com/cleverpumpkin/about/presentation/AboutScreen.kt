@@ -22,7 +22,12 @@ import com.yandex.div2.DivData
 import com.yandex.div2.DivVariable
 
 @Composable
-fun AboutScreen(onNavigation: () -> Unit, contextThemeWrapper: ContextThemeWrapper, modifier: Modifier = Modifier) {
+fun AboutScreen(
+    onNavigation: () -> Unit,
+    contextThemeWrapper: ContextThemeWrapper,
+    themeString: String,
+    modifier: Modifier = Modifier
+) {
     Scaffold { paddingValues ->
         val contextWrapper = remember { contextThemeWrapper }
         val assetReader = remember { AssetReader() }
@@ -35,7 +40,7 @@ fun AboutScreen(onNavigation: () -> Unit, contextThemeWrapper: ContextThemeWrapp
                         configuration = configuration,
                         lifecycleOwner = context as LifecycleOwner
                     ).also { div2Context: Div2Context ->
-                        val variable = Variable.StringVariable("app_theme", "dark")
+                        val variable = Variable.StringVariable("app_theme", themeString)
                         div2Context.divVariableController.putOrUpdate(variable)
                     }
                 )

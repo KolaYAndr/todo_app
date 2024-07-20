@@ -31,8 +31,8 @@
     <string name="network_error_0">Probably no internet</string>
     <string name="yandex_login">Yandex login</string>
     <string name="api_key_login">Api key login</string>
-    <string name="title_network">Network Module</string>
-    <string name="title_feature_auth">Auth Module</string>
-    <string name="title_feature_todo">Todo Feature</string>
-    <string name="title_core">Core Module</string>
+    <string name="title_network" translatable="false">Network Module</string>
+    <string name="title_feature_auth" translatable="false">Auth Module</string>
+    <string name="title_feature_todo" translatable="false">Todo Feature</string>
+    <string name="title_core" translatable="false">Core Module</string>
 </resources>

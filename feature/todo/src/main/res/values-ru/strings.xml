@@ -31,4 +31,5 @@
     <string name="network_error_0">Проверьте соединение</string>
     <string name="yandex_login">Вход через яндекс</string>
     <string name="api_key_login">Вход через ключ апи</string>
+    <string name="settings">Перейти на экран настроек</string>
 </resources>

@@ -1,7 +1,7 @@
 package com.cleverpumpkin.todo.domain.mappers
 
 import com.cleverpumpkin.database.data.TodoEntity
-import com.cleverpumpkin.networ.domain.dto.TodoItemDto
+import com.cleverpumpkin.network.domain.dto.TodoItemDto
 
 fun TodoItemDto.toEntity(): TodoEntity {
     return TodoEntity(

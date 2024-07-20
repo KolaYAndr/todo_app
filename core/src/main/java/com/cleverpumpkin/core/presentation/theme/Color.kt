@@ -1,0 +1,37 @@
+package com.cleverpumpkin.core.presentation.theme
+
+import androidx.compose.ui.graphics.Color
+
+val LightSeparator = Color(0x33000000)
+val LightOverlay = Color(0x0F000000)
+val LightPrimary = Color(0xFF000000)
+val LightSecondary = Color(0x99000000)
+val LightTertiary = Color(0x4D000000)
+val LightDisabled = Color(0x26000000)
+val LightBackPrimary = Color(0xFFF7F6F2)
+val LightBackSecondary = Color(0xFFFFFFFF)
+val LightBackElevated = Color(0xFFFFFFFF)
+val LightRed = Color(0xFFFF3B30)
+val LightGreen = Color(0xFF34C759)
+val LightBlue = Color(0xFF007AFF)
+val LightLightblue = Color(0xFFADD1F6)
+val LightGray = Color(0xFF8E8E93)
+val LightGrayLight = Color(0xFFD1D1D6)
+
+val White = Color(0xFFFFFFFF)
+
+val DarkSeparator = Color(0x33FFFFFF)
+val DarkOverlay = Color(0x52000000)
+val DarkPrimary = Color(0xFFFFFFFF)
+val DarkSecondary = Color(0x99FFFFFF)
+val DarkTertiary = Color(0x66FFFFFF)
+val DarkDisabled = Color(0x26FFFFFF)
+val DarkBackPrimary = Color(0xFF161618)
+val DarkBackSecondary = Color(0xFF252528)
+val DarkBackElevated = Color(0xFF3C3C3F)
+val DarkRed = Color(0xFFFF453A)
+val DarkGreen = Color(0xFF32D74B)
+val DarkBlue = Color(0xFF0A84FF)
+val DarkLightblue = Color(0xFF12375D)
+val DarkGray = Color(0xFF8E8E93)
+val DarkGrayLight = Color(0xFF48484A)

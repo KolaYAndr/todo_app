@@ -2,10 +2,9 @@ package com.cleverpumpkin.todo.presentation.screens.todo_list_screen
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.cleverpumpkin.networ.domain.connectivity_observer.ConnectivityObserver
-import com.cleverpumpkin.networ.domain.connectivity_observer.Status
-import com.cleverpumpkin.networ.domain.response_wrapper.Response
-import com.cleverpumpkin.todo.data.task_scheduler.BackgroundTaskScheduler
+import com.cleverpumpkin.network.domain.connectivity_observer.ConnectivityObserver
+import com.cleverpumpkin.network.domain.connectivity_observer.Status
+import com.cleverpumpkin.network.domain.response_wrapper.Response
 import com.cleverpumpkin.todo.domain.repository.TodoItemsRepository
 import com.cleverpumpkin.todo.domain.todo_model.TodoItem
 import dagger.hilt.android.lifecycle.HiltViewModel

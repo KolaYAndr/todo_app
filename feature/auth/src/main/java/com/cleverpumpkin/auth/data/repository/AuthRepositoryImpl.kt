@@ -3,7 +3,7 @@ package com.cleverpumpkin.auth.data.repository
 import android.content.SharedPreferences
 import com.cleverpumpkin.auth.data.api.ApiKey
 import com.cleverpumpkin.auth.repository.AuthRepository
-import com.cleverpumpkin.cor.data.preference.PreferenceKeys
+import com.cleverpumpkin.core.data.preference.PreferenceKeys
 import javax.inject.Inject
 
 /**
