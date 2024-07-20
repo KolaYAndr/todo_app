@@ -1,0 +1,17 @@
+package com.cleverpumpkin.networ.domain.responses
+
+import com.cleverpumpkin.networ.domain.dto.TodoItemDto
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
+
+@Serializable
+data class UpdateItemListResponse(
+    @SerialName("status")
+    val status: String,
+
+    @SerialName("list")
+    val items: List<TodoItemDto>,
+
+    @SerialName("revision")
+    val revision: Int
+)

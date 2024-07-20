@@ -28,6 +28,11 @@
     <string name="network_error_403">Access forbidden</string>
     <string name="network_error_408">Request timeout</string>
     <string name="network_error_500">Internal server error</string>
+    <string name="network_error_0">Probably no internet</string>
     <string name="yandex_login">Yandex login</string>
     <string name="api_key_login">Api key login</string>
+    <string name="title_network">Network Module</string>
+    <string name="title_feature_auth">Auth Module</string>
+    <string name="title_feature_todo">Todo Feature</string>
+    <string name="title_core">Core Module</string>
 </resources>
