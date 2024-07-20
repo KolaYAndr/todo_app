@@ -4,7 +4,6 @@ import android.view.ContextThemeWrapper
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.compose.animation.AnimatedContentTransitionScope
 import androidx.compose.animation.core.tween
-import androidx.compose.animation.expandIn
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
@@ -24,6 +23,7 @@ import com.cleverpumpkin.auth.auth_screen.AuthViewModel
 import com.cleverpumpkin.cor.presentation.navigation.NavArgs
 import com.cleverpumpkin.cor.presentation.navigation.NavRoutes
 import com.cleverpumpkin.cor.presentation.theme.TodoAppTheme
+import com.cleverpumpkin.settings.presentation.SettingsScreen
 import com.cleverpumpkin.todo.presentation.screens.todo_detail_screen.TodoDetailScreen
 import com.cleverpumpkin.todo.presentation.screens.todo_list_screen.TodoListScreen
 import com.cleverpumpkin.todo.presentation.screens.todo_list_screen.TodoListViewModel
@@ -132,6 +132,15 @@ fun Navigation(navController: NavHostController, modifier: Modifier = Modifier) 
         }
 
         composable(route = NavRoutes.SETTINGS_SCREEN) {
+            SettingsScreen(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(TodoAppTheme.colorScheme.backPrimary),
+                onNavigation = { navController.navigate(NavRoutes.ABOUT_SCREEN) }
+            )
+        }
+
+        composable(route = NavRoutes.ABOUT_SCREEN) {
             val context = LocalContext.current
             val contextWrapper = remember { ContextThemeWrapper(context, R.style.Theme_TodoApp) }
             AboutScreen(

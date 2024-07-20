@@ -49,6 +49,10 @@ class TodoItemsRepositoryImpl @Inject constructor(
             val token = getToken()
             val response = api.getItems(revision, token)
 
+            _todoItemsFlow.update {
+                dao.getAll().filter { !it.isDeleted }.map { it.toDomain() }
+            }
+
             if (response is Response.Success) {
                 rewriteRevision(response.result.revision)
                 dao.upsert(response.result.items.map { it.toEntity() })

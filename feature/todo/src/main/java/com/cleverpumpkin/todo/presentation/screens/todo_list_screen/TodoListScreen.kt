@@ -83,8 +83,8 @@ fun TodoListScreen(
                 TodoList(
                     modifier = Modifier
                         .fillMaxSize()
-                        .padding(paddingValues)
-                        .background(TodoAppTheme.colorScheme.backPrimary),
+                        .background(TodoAppTheme.colorScheme.backPrimary)
+                        .padding(paddingValues),
                     scrollBehavior = scrollBehavior,
                     items = uiState.items,
                     onDelete = { item -> onEndToStartAction(item) },
@@ -100,6 +100,8 @@ fun TodoListScreen(
                     errorCode = uiState.errorCode,
                     onRefresh = { onRefresh() },
                     modifier = Modifier.fillMaxSize()
+                        .background(TodoAppTheme.colorScheme.backPrimary)
+                        .padding(paddingValues)
                 )
             }
         }

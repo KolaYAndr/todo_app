@@ -18,7 +18,9 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            TodoAppTheme {
+            TodoAppTheme(
+
+            ) {
                 val navHostController = rememberNavController()
                 Navigation(navController = navHostController, modifier = Modifier.fillMaxSize())
             }

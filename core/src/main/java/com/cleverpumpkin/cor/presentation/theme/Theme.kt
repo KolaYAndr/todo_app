@@ -18,10 +18,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
+import com.cleverpumpkin.cor.presentation.theme.custom.AppColorScheme
+import com.cleverpumpkin.cor.presentation.theme.custom.AppTypography
 import com.cleverpumpkin.cor.presentation.theme.custom.LocalAppColorScheme
 import com.cleverpumpkin.cor.presentation.theme.custom.LocalAppTypography
 
-private val DarkColorScheme = com.cleverpumpkin.cor.presentation.theme.custom.AppColorScheme(
+private val DarkColorScheme = AppColorScheme(
     supportSeparator = DarkSeparator,
     supportOverlay = DarkOverlay,
     labelPrimary = DarkPrimary,
@@ -40,7 +42,7 @@ private val DarkColorScheme = com.cleverpumpkin.cor.presentation.theme.custom.Ap
     white = White
 )
 
-private val LightColorScheme = com.cleverpumpkin.cor.presentation.theme.custom.AppColorScheme(
+private val LightColorScheme = AppColorScheme(
     supportSeparator = LightSeparator,
     supportOverlay = LightOverlay,
     labelPrimary = LightPrimary,
@@ -74,10 +76,10 @@ fun TodoAppTheme(
 }
 
 object TodoAppTheme {
-    val colorScheme: com.cleverpumpkin.cor.presentation.theme.custom.AppColorScheme
+    val colorScheme: AppColorScheme
         @Composable get() = LocalAppColorScheme.current
 
-    val typography: com.cleverpumpkin.cor.presentation.theme.custom.AppTypography
+    val typography: AppTypography
         @Composable get() = LocalAppTypography.current
 }
 

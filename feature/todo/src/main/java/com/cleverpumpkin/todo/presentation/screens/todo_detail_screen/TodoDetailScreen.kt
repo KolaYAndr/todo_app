@@ -29,6 +29,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextField
 import androidx.compose.material3.rememberDatePickerState
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.State
@@ -57,6 +58,7 @@ import com.cleverpumpkin.todo.presentation.composable_elements.InputField
 import com.cleverpumpkin.todo.presentation.composable_elements.RefreshBlock
 import com.cleverpumpkin.todo.presentation.screens.todo_detail_screen.composables.DeadlineBlock
 import com.cleverpumpkin.todo.presentation.screens.todo_detail_screen.composables.ImportanceBlock
+import com.cleverpumpkin.todo.presentation.screens.todo_detail_screen.composables.ImportanceBottomSheet
 import com.cleverpumpkin.todo.presentation.screens.todo_detail_screen.composables.UsualTopAppBar
 import com.cleverpumpkin.todo.presentation.utils.getErrorStringResource
 
@@ -118,8 +120,8 @@ fun TodoDetailScreen(
                 Column(
                     modifier = Modifier
                         .fillMaxSize()
-                        .padding(paddingValues)
                         .background(TodoAppTheme.colorScheme.backPrimary)
+                        .padding(paddingValues)
                         .verticalScroll(scrollState)
                 ) {
                     InputField(
@@ -150,44 +152,20 @@ fun TodoDetailScreen(
                                 .background(TodoAppTheme.colorScheme.backPrimary)
                         )
 
+                        val sheetState = rememberModalBottomSheetState(
+                            skipPartiallyExpanded = true
+                        )
+
                         this@Column.AnimatedVisibility(
                             visible = showDropdown,
                             enter = expandVertically(expandFrom = Alignment.Top),
                             exit = shrinkVertically(shrinkTowards = Alignment.Top)
                         ) {
-                            DropdownMenu(
-                                modifier = Modifier.background(TodoAppTheme.colorScheme.backSecondary),
-                                expanded = showDropdown,
-                                onDismissRequest = { showDropdown = false }
-                            ) {
-                                DropdownMenuItem(
-                                    text = { Text(text = stringResource(id = R.string.importance_low)) },
-                                    onClick = {
-                                        onSelectImportance(Importance.Low)
-                                        showDropdown = false
-                                    }
-                                )
-                                DropdownMenuItem(
-                                    text = { Text(text = stringResource(id = R.string.importance_normal)) },
-                                    onClick = {
-                                        onSelectImportance(Importance.Normal)
-                                        showDropdown = false
-                                    }
-                                )
-                                DropdownMenuItem(
-                                    text = {
-                                        Text(text = buildAnnotatedString {
-                                            withStyle(style = SpanStyle(color = TodoAppTheme.colorScheme.red)) {
-                                                append("!! ${stringResource(id = R.string.importance_urgent)}")
-                                            }
-                                        })
-                                    },
-                                    onClick = {
-                                        onSelectImportance(Importance.Urgent)
-                                        showDropdown = false
-                                    }
-                                )
-                            }
+                            ImportanceBottomSheet(
+                                onSelectImportance = { onSelectImportance(it) },
+                                sheetState = sheetState,
+                                onDismiss = { showDropdown = false }
+                            )
                         }
                     }
 
@@ -276,6 +254,8 @@ fun TodoDetailScreen(
                 errorCode = uiState.errorCode,
                 onRefresh = { onRefresh() },
                 modifier = Modifier.fillMaxSize()
+                    .background(TodoAppTheme.colorScheme.backPrimary)
+                    .padding(paddingValues)
             )
         }
     }
