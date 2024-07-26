@@ -1,6 +1,7 @@
 package com.cleverpumpkin.todo.presentation.screens.todo_detail_screen.composables
 
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -11,6 +12,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.semantics.clearAndSetSemantics
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.role
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
 import com.cleverpumpkin.core.presentation.theme.TodoAppTheme
@@ -24,12 +29,24 @@ fun DeadlineBlock(
     modifier: Modifier = Modifier,
     deadlineText: String
 ) {
+    val semanticsString = if (isDeadlineSet) stringResource(
+        id = R.string.deadline_semantics, deadlineText
+    ) else stringResource(
+        id = R.string.no_deadline_set
+    )
     Row(
-        modifier = modifier,
+        modifier = modifier
+            .clearAndSetSemantics {
+                contentDescription = semanticsString
+                role = Role.Switch
+            }
+            .clickable { onSwitch(!isDeadlineSet) },
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {
-        Column(verticalArrangement = Arrangement.spacedBy(4.dp, Alignment.Top)) {
+        Column(
+            verticalArrangement = Arrangement.spacedBy(4.dp, Alignment.Top)
+        ) {
             Text(
                 text = stringResource(id = R.string.deadline),
                 style = TodoAppTheme.typography.body,
@@ -43,10 +60,7 @@ fun DeadlineBlock(
                 )
             }
         }
-        ThemedSwitch(
-            checked = isDeadlineSet,
-            onSwitch = { onSwitch(it) }
-        )
+        ThemedSwitch(checked = isDeadlineSet, onSwitch = { onSwitch(it) })
     }
 }
 
@@ -55,13 +69,11 @@ fun DeadlineBlock(
 fun PreviewDeadline() {
     TodoAppTheme {
         val deadline = true
-        DeadlineBlock(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(12.dp),
+        DeadlineBlock(modifier = Modifier
+            .fillMaxWidth()
+            .padding(12.dp),
             isDeadlineSet = deadline,
             deadlineText = "2 июня 2021",
-            onSwitch = {}
-        )
+            onSwitch = {})
     }
 }

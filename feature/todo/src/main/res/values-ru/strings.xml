@@ -17,7 +17,7 @@
     <string name="visibility_content">Показать выполненые задания</string>
     <string name="visibility_title">Видимость</string>
     <string name="item_swipe">Смахнуть задачу</string>
-    <string name="close">Закрыть</string>
+    <string name="close">Вернуться к экрану со списком</string>
     <string name="mark_done">Отметить выполненным</string>
     <string name="ok">@android:string/ok</string>
     <string name="cancel">Отменить</string>
@@ -32,4 +32,6 @@
     <string name="yandex_login">Вход через яндекс</string>
     <string name="api_key_login">Вход через ключ апи</string>
     <string name="settings">Перейти на экран настроек</string>
+    <string name="deadline_semantics">Срок выполнения: %s</string>
+    <string name="no_deadline_set">Срок выполнения не установлен</string>
 </resources>

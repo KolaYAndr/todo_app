@@ -4,7 +4,6 @@ import android.view.ContextThemeWrapper
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.compose.animation.AnimatedContentTransitionScope
 import androidx.compose.animation.core.tween
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -25,10 +24,10 @@ import com.cleverpumpkin.auth.auth_screen.AuthScreen
 import com.cleverpumpkin.auth.auth_screen.AuthViewModel
 import com.cleverpumpkin.core.presentation.navigation.NavArgs
 import com.cleverpumpkin.core.presentation.navigation.NavRoutes
-import com.cleverpumpkin.core.presentation.theme.TodoAppTheme
 import com.cleverpumpkin.settings.presentation.SettingsScreen
 import com.cleverpumpkin.settings.presentation.SettingsScreenViewModel
 import com.cleverpumpkin.todo.presentation.screens.todo_detail_screen.TodoDetailScreen
+import com.cleverpumpkin.todo.presentation.screens.todo_detail_screen.TodoDetailViewModel
 import com.cleverpumpkin.todo.presentation.screens.todo_list_screen.TodoListScreen
 import com.cleverpumpkin.todo.presentation.screens.todo_list_screen.TodoListViewModel
 import com.cleverpumpkin.todoapp.R
@@ -36,6 +35,8 @@ import com.cleverpumpkin.todoapp.presentation.util.getThemeFlagByString
 import com.yandex.authsdk.YandexAuthLoginOptions
 import com.yandex.authsdk.YandexAuthOptions
 import com.yandex.authsdk.YandexAuthSdk
+
+private const val TRANSITION_ANIMATION_DURATION = 500
 
 @Composable
 fun Navigation(navController: NavHostController, modifier: Modifier = Modifier) {
@@ -46,25 +47,25 @@ fun Navigation(navController: NavHostController, modifier: Modifier = Modifier) 
         enterTransition = {
             slideIntoContainer(
                 AnimatedContentTransitionScope.SlideDirection.Start,
-                tween(500)
+                tween(TRANSITION_ANIMATION_DURATION)
             )
         },
         exitTransition = {
             slideOutOfContainer(
                 AnimatedContentTransitionScope.SlideDirection.Start,
-                tween(500)
+                tween(TRANSITION_ANIMATION_DURATION)
             )
         },
         popEnterTransition = {
             slideIntoContainer(
                 AnimatedContentTransitionScope.SlideDirection.End,
-                tween(500)
+                tween(TRANSITION_ANIMATION_DURATION)
             )
         },
         popExitTransition = {
             slideOutOfContainer(
                 AnimatedContentTransitionScope.SlideDirection.End,
-                tween(500)
+                tween(TRANSITION_ANIMATION_DURATION)
             )
         }
 
@@ -113,7 +114,7 @@ fun Navigation(navController: NavHostController, modifier: Modifier = Modifier) 
             )
         ) {
             val todoDetailViewModel =
-                hiltViewModel<com.cleverpumpkin.todo.presentation.screens.todo_detail_screen.TodoDetailViewModel>()
+                hiltViewModel<TodoDetailViewModel>()
             val state = todoDetailViewModel.uiState.collectAsStateWithLifecycle()
             val id = it.arguments?.getString(NavArgs.TODO_ID) ?: NavArgs.CREATE_TODO
             todoDetailViewModel.findItem(id)
@@ -124,13 +125,13 @@ fun Navigation(navController: NavHostController, modifier: Modifier = Modifier) 
                     navController.navigateUp()
                 },
                 onNavBack = { navController.navigateUp() },
-                onSelectImportance = { todoDetailViewModel.selectImportance(it) },
+                onSelectImportance = { importance ->  todoDetailViewModel.selectImportance(importance) },
                 onDelete = {
                     todoDetailViewModel.deleteItem()
                     navController.navigateUp()
                 },
-                onTextChange = { todoDetailViewModel.changeText(it) },
-                onSelectDeadline = { todoDetailViewModel.selectDeadline(it) },
+                onTextChange = { text -> todoDetailViewModel.changeText(text) },
+                onSelectDeadline = { deadline -> todoDetailViewModel.selectDeadline(deadline) },
                 onRefresh = { todoDetailViewModel.refresh() },
                 modifier = Modifier.fillMaxSize()
             )
@@ -140,10 +141,9 @@ fun Navigation(navController: NavHostController, modifier: Modifier = Modifier) 
             val settingsScreenViewModel = hiltViewModel<SettingsScreenViewModel>()
             val themeString by remember { mutableStateOf(settingsScreenViewModel.getThemeString()) }
             SettingsScreen(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .background(TodoAppTheme.colorScheme.backPrimary),
+                modifier = Modifier.fillMaxSize(),
                 onNavigation = { navController.navigate(NavRoutes.ABOUT_SCREEN) },
+                onNavBack = { navController.navigateUp() },
                 onChangeTheme = { settingsScreenViewModel.setTheme(it)},
                 themeString = themeString
             )
@@ -158,9 +158,7 @@ fun Navigation(navController: NavHostController, modifier: Modifier = Modifier) 
             AboutScreen(
                 contextThemeWrapper = contextWrapper,
                 onNavigation = { navController.navigateUp() },
-                modifier = Modifier
-                    .fillMaxSize()
-                    .background(TodoAppTheme.colorScheme.backPrimary),
+                modifier = Modifier.fillMaxSize(),
                 themeString = themeString.value
             )
         }

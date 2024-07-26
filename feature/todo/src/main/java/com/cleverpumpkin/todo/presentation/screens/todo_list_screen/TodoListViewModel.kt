@@ -46,16 +46,16 @@ class TodoListViewModel @Inject constructor(
 
     private fun getTodos() = viewModelScope.launch {
         repository.fetchTodoItems()
-            viewModelScope.launch {
-                repository.todoItemsFlow.combine(_uiState) { items: List<TodoItem>, state: TodoListUiState ->
-                    val filteredItems =
-                        if (state.isFiltered) items.filter { item -> !item.isDone } else items
-                    filteredItems
-                }.collectLatest { filteredItems ->
-                    val count = filteredItems.count { it.isDone }
-                    _uiState.update { it.copy(items = filteredItems, completed = count) }
-                }
+        viewModelScope.launch {
+            repository.todoItemsFlow.combine(_uiState) { items: List<TodoItem>, state: TodoListUiState ->
+                val filteredItems =
+                    if (state.isFiltered) items.filter { item -> !item.isDone } else items
+                filteredItems
+            }.collectLatest { filteredItems ->
+                val count = filteredItems.count { it.isDone }
+                _uiState.update { it.copy(items = filteredItems, completed = count) }
             }
+        }
     }
 
     fun refresh() = viewModelScope.launch {
@@ -98,6 +98,7 @@ class TodoListViewModel @Inject constructor(
                     repository.uploadTodoItems()
                 }
             }
+
             else -> Unit
         }
     }

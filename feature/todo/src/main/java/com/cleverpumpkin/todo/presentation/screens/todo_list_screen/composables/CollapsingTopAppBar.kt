@@ -19,6 +19,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.isTraversalGroup
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.traversalIndex
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import com.cleverpumpkin.core.presentation.theme.TodoAppTheme
@@ -37,7 +40,7 @@ fun CollapsingTopAppBar(
     completed: Int
 ) {
     LargeTopAppBar(
-        modifier = modifier,
+        modifier = modifier.semantics { isTraversalGroup = true },
         colors = TopAppBarDefaults.topAppBarColors(
             containerColor = TodoAppTheme.colorScheme.backPrimary,
             scrolledContainerColor = TodoAppTheme.colorScheme.backPrimary,
@@ -64,6 +67,7 @@ fun CollapsingTopAppBar(
                         )
                         Row {
                             IconButton(
+                                modifier = Modifier.semantics { traversalIndex = 1f },
                                 onClick = { onIconClick() },
                                 colors = IconButtonDefaults.iconButtonColors(contentColor = TodoAppTheme.colorScheme.blue)
                             ) {
@@ -74,6 +78,7 @@ fun CollapsingTopAppBar(
                             }
 
                             IconButton(
+                                modifier = Modifier.semantics { traversalIndex = 2f },
                                 onClick = { onSettingsIconClick() },
                                 colors = IconButtonDefaults.iconButtonColors(contentColor = TodoAppTheme.colorScheme.blue)
                             ) {
@@ -90,14 +95,18 @@ fun CollapsingTopAppBar(
         actions = {
             AnimatedVisibility(visible = scrollBehavior.state.collapsedFraction >= COLLAPSED_STATE) {
                 Row {
-                    IconButton(onClick = { onIconClick() }) {
+                    IconButton(
+                        modifier = Modifier.semantics { traversalIndex = 1f },
+                        onClick = { onIconClick() }) {
                         Icon(
                             painter = painterResource(id = if (isFiltered) R.drawable.eye else R.drawable.striked_eye),
                             contentDescription = stringResource(id = R.string.show_done_tasks)
                         )
                     }
 
-                    IconButton(onClick = { onSettingsIconClick() }) {
+                    IconButton(
+                        modifier = Modifier.semantics { traversalIndex = 2f },
+                        onClick = { onSettingsIconClick() }) {
                         Icon(
                             painter = painterResource(id = R.drawable.settings),
                             contentDescription = stringResource(id = R.string.settings)

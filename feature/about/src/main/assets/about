@@ -66,6 +66,7 @@
         },
         {
           "type": "image",
+          "accessibility": "Фото искомого человека",
           "$image_url": "image_url",
           "border": {
             "corner_radius": 16,

@@ -9,9 +9,9 @@ import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.rememberNavController
 import com.cleverpumpkin.core.presentation.theme.TodoAppTheme
-import com.cleverpumpkin.todoapp.presentation.view_model.MainActivityViewModel
 import com.cleverpumpkin.todoapp.presentation.navigation.Navigation
 import com.cleverpumpkin.todoapp.presentation.util.getThemeFlagByString
+import com.cleverpumpkin.todoapp.presentation.view_model.MainActivityViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -22,7 +22,6 @@ class MainActivity : ComponentActivity() {
         setContent {
             val mainViewModel = hiltViewModel<MainActivityViewModel>()
             val isDark = getThemeFlagByString(string = mainViewModel.getThemeString())
-
             TodoAppTheme(
                 darkTheme = isDark
             ) {
