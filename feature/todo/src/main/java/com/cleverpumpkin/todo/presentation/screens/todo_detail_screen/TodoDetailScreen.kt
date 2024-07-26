@@ -14,8 +14,6 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.DatePicker
 import androidx.compose.material3.DatePickerDialog
-import androidx.compose.material3.DropdownMenu
-import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Scaffold
@@ -26,31 +24,35 @@ import androidx.compose.material3.SnackbarResult
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.rememberDatePickerState
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.State
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.SpanStyle
-import androidx.compose.ui.text.buildAnnotatedString
-import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.launch
 import java.time.LocalDateTime
 import java.time.ZoneOffset
 import java.time.format.DateTimeFormatter
 import java.time.format.FormatStyle
-import com.cleverpumpkin.cor.presentation.theme.TodoAppTheme
+import com.cleverpumpkin.core.presentation.theme.TodoAppTheme
 import com.cleverpumpkin.todo.R
+import com.cleverpumpkin.todo.domain.todo_model.Importance
 import com.cleverpumpkin.todo.presentation.composable_elements.DeleteButton
 import com.cleverpumpkin.todo.presentation.composable_elements.InputField
 import com.cleverpumpkin.todo.presentation.composable_elements.RefreshBlock
 import com.cleverpumpkin.todo.presentation.screens.todo_detail_screen.composables.DeadlineBlock
 import com.cleverpumpkin.todo.presentation.screens.todo_detail_screen.composables.ImportanceBlock
+import com.cleverpumpkin.todo.presentation.screens.todo_detail_screen.composables.ImportanceBottomSheet
 import com.cleverpumpkin.todo.presentation.screens.todo_detail_screen.composables.UsualTopAppBar
+import com.cleverpumpkin.todo.presentation.utils.getErrorStringResource
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -58,7 +60,7 @@ fun TodoDetailScreen(
     state: State<TodoDetailUiState>,
     onSave: () -> Unit,
     onNavBack: () -> Unit,
-    onSelectImportance: (com.cleverpumpkin.todo.domain.todo_model.Importance) -> Unit,
+    onSelectImportance: (Importance) -> Unit,
     onSelectDeadline: (LocalDateTime?) -> Unit,
     onTextChange: (String) -> Unit,
     onDelete: () -> Unit,
@@ -78,7 +80,7 @@ fun TodoDetailScreen(
         snackbarHost = {
             if (uiState.errorCode != null) {
                 val errorMessage = stringResource(
-                    id = com.cleverpumpkin.todo.presentation.utils.getErrorStringResource(uiState.errorCode)
+                    id = getErrorStringResource(uiState.errorCode)
                 )
                 val actionMessage = stringResource(id = R.string.refresh)
                 SnackbarHost(hostState = snackbarHostState)
@@ -110,8 +112,8 @@ fun TodoDetailScreen(
                 Column(
                     modifier = Modifier
                         .fillMaxSize()
-                        .padding(paddingValues)
                         .background(TodoAppTheme.colorScheme.backPrimary)
+                        .padding(paddingValues)
                         .verticalScroll(scrollState)
                 ) {
                     InputField(
@@ -122,16 +124,16 @@ fun TodoDetailScreen(
                             .padding(16.dp)
                     )
                     val importanceString = when (uiState.importance) {
-                        com.cleverpumpkin.todo.domain.todo_model.Importance.Low -> R.string.importance_low
-                        com.cleverpumpkin.todo.domain.todo_model.Importance.Normal -> R.string.importance_normal
-                        com.cleverpumpkin.todo.domain.todo_model.Importance.Urgent -> R.string.importance_urgent
+                        Importance.Low -> R.string.importance_low
+                        Importance.Normal -> R.string.importance_normal
+                        Importance.Urgent -> R.string.importance_urgent
                     }
                     val importance = stringResource(id = importanceString)
-                    val showDropdown = remember { mutableStateOf(false) }
+                    var showDropdown by remember { mutableStateOf(false) }
 
                     Box(
                         modifier = Modifier
-                            .clickable { showDropdown.value = true }
+                            .clickable { showDropdown = true }
                             .padding(16.dp)
                     ) {
                         ImportanceBlock(
@@ -142,47 +144,30 @@ fun TodoDetailScreen(
                                 .background(TodoAppTheme.colorScheme.backPrimary)
                         )
 
-                        this@Column.AnimatedVisibility(visible = showDropdown.value) {
-                            DropdownMenu(
-                                modifier = Modifier.background(TodoAppTheme.colorScheme.backSecondary),
-                                expanded = showDropdown.value,
-                                onDismissRequest = { showDropdown.value = false }
-                            ) {
-                                DropdownMenuItem(
-                                    text = { Text(text = stringResource(id = R.string.importance_low)) },
-                                    onClick = {
-                                        onSelectImportance(com.cleverpumpkin.todo.domain.todo_model.Importance.Low)
-                                        showDropdown.value = false
-                                    }
-                                )
-                                DropdownMenuItem(
-                                    text = { Text(text = stringResource(id = R.string.importance_normal)) },
-                                    onClick = {
-                                        onSelectImportance(com.cleverpumpkin.todo.domain.todo_model.Importance.Normal)
-                                        showDropdown.value = false
-                                    }
-                                )
-                                DropdownMenuItem(
-                                    text = {
-                                        Text(text = buildAnnotatedString {
-                                            withStyle(style = SpanStyle(color = TodoAppTheme.colorScheme.red)) {
-                                                append("!! ${stringResource(id = R.string.importance_urgent)}")
-                                            }
-                                        })
-                                    },
-                                    onClick = {
-                                        onSelectImportance(com.cleverpumpkin.todo.domain.todo_model.Importance.Urgent)
-                                        showDropdown.value = false
-                                    }
-                                )
-                            }
+                        val sheetState = rememberModalBottomSheetState(
+                            skipPartiallyExpanded = true
+                        )
+
+                        this@Column.AnimatedVisibility(
+                            visible = showDropdown,
+                            enter = expandVertically(expandFrom = Alignment.Top),
+                            exit = shrinkVertically(shrinkTowards = Alignment.Top)
+                        ) {
+                            ImportanceBottomSheet(
+                                onSelectImportance = { onSelectImportance(it) },
+                                sheetState = sheetState,
+                                onDismiss = { showDropdown = false }
+                            )
                         }
                     }
 
-                    HorizontalDivider(modifier = Modifier.padding(horizontal = 16.dp))
+                    HorizontalDivider(
+                        modifier = Modifier.padding(horizontal = 16.dp),
+                        color = TodoAppTheme.colorScheme.supportSeparator
+                    )
 
                     val datePickerState = rememberDatePickerState()
-                    val showDatePicker = remember { mutableStateOf(false) }
+                    var showDatePicker by remember { mutableStateOf(false) }
                     val formatter =
                         remember { DateTimeFormatter.ofLocalizedDate(FormatStyle.MEDIUM) }
                     val pickedDate =
@@ -191,18 +176,18 @@ fun TodoDetailScreen(
                         formatter.format(uiState.deadline)
 
                     AnimatedVisibility(
-                        visible = showDatePicker.value,
-                        enter = expandVertically(),
-                        exit = shrinkVertically()
+                        visible = showDatePicker,
+                        enter = expandVertically(expandFrom = Alignment.Top),
+                        exit = shrinkVertically(shrinkTowards = Alignment.Top)
                     ) {
                         DatePickerDialog(
                             onDismissRequest = {
-                                showDatePicker.value = false
+                                showDatePicker = false
                             },
                             confirmButton = {
                                 TextButton(
                                     onClick = {
-                                        showDatePicker.value = false
+                                        showDatePicker = false
                                         val timeInSeconds = (datePickerState.selectedDateMillis
                                             ?: datePickerState.displayedMonthMillis) / 1000
                                         val date = LocalDateTime.ofEpochSecond(
@@ -220,7 +205,7 @@ fun TodoDetailScreen(
                             dismissButton = {
                                 TextButton(
                                     onClick = {
-                                        showDatePicker.value = false
+                                        showDatePicker = false
                                     }
                                 ) {
                                     Text(text = stringResource(id = R.string.cancel))
@@ -234,7 +219,7 @@ fun TodoDetailScreen(
                     DeadlineBlock(
                         isDeadlineSet = uiState.deadline != null,
                         onSwitch = {
-                            showDatePicker.value = it
+                            showDatePicker = it
                             if (!it) onSelectDeadline(null)
                         },
                         deadlineText = pickedDate.value,
@@ -243,11 +228,16 @@ fun TodoDetailScreen(
                             .padding(16.dp)
                     )
 
-                    HorizontalDivider(modifier = Modifier.padding(horizontal = 16.dp))
+                    HorizontalDivider(
+                        modifier = Modifier.padding(horizontal = 16.dp),
+                        color = TodoAppTheme.colorScheme.supportSeparator
+                    )
 
                     DeleteButton(
                         onDelete = { onDelete() },
-                        modifier = Modifier.padding(16.dp)
+                        modifier = Modifier
+                            .padding(16.dp)
+                            .align(Alignment.End)
                     )
                 }
             }
@@ -256,6 +246,8 @@ fun TodoDetailScreen(
                 errorCode = uiState.errorCode,
                 onRefresh = { onRefresh() },
                 modifier = Modifier.fillMaxSize()
+                    .background(TodoAppTheme.colorScheme.backPrimary)
+                    .padding(paddingValues)
             )
         }
     }

@@ -31,4 +31,5 @@
     <string name="network_error_0">Probably no internet</string>
     <string name="yandex_login">Yandex login</string>
     <string name="api_key_login">Api key login</string>
+    <string name="settings">Go to settings screen</string>
 </resources>

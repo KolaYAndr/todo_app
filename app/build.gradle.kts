@@ -51,6 +51,8 @@ android {
 dependencies {
     implementation(project(":feature:todo"))
     implementation(project(":feature:auth"))
+    implementation(project(":feature:about"))
+    implementation(project(":feature:settings"))
     implementation(project(":core"))
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
@@ -82,4 +84,7 @@ dependencies {
 
     //Yandex Auth
     implementation(libs.yandex.android)
+
+    //Datastore
+    implementation(libs.datastore)
 }

@@ -21,7 +21,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.PreviewLightDark
-import com.cleverpumpkin.cor.presentation.theme.TodoAppTheme
+import com.cleverpumpkin.core.presentation.theme.TodoAppTheme
 import com.cleverpumpkin.todo.R
 
 private const val COLLAPSED_STATE = 0.5
@@ -31,6 +31,7 @@ private const val COLLAPSED_STATE = 0.5
 fun CollapsingTopAppBar(
     scrollBehavior: TopAppBarScrollBehavior,
     onIconClick: () -> Unit,
+    onSettingsIconClick: () -> Unit,
     modifier: Modifier = Modifier,
     isFiltered: Boolean,
     completed: Int
@@ -61,26 +62,47 @@ fun CollapsingTopAppBar(
                             style = TodoAppTheme.typography.body,
                             color = TodoAppTheme.colorScheme.labelTertiary,
                         )
-                        IconButton(
-                            onClick = { onIconClick() },
-                            colors = IconButtonDefaults.iconButtonColors(contentColor = TodoAppTheme.colorScheme.blue)
-                        ) {
-                            Icon(
-                                painter = painterResource(id = if (isFiltered) R.drawable.eye else R.drawable.striked_eye),
-                                contentDescription = stringResource(id = R.string.show_done_tasks)
-                            )
+                        Row {
+                            IconButton(
+                                onClick = { onIconClick() },
+                                colors = IconButtonDefaults.iconButtonColors(contentColor = TodoAppTheme.colorScheme.blue)
+                            ) {
+                                Icon(
+                                    painter = painterResource(id = if (isFiltered) R.drawable.eye else R.drawable.striked_eye),
+                                    contentDescription = stringResource(id = R.string.show_done_tasks)
+                                )
+                            }
+
+                            IconButton(
+                                onClick = { onSettingsIconClick() },
+                                colors = IconButtonDefaults.iconButtonColors(contentColor = TodoAppTheme.colorScheme.blue)
+                            ) {
+                                Icon(
+                                    painter = painterResource(id = R.drawable.settings),
+                                    contentDescription = stringResource(id = R.string.settings)
+                                )
+                            }
                         }
                     }
                 }
             }
         },
         actions = {
-            AnimatedVisibility(visible = scrollBehavior.state.collapsedFraction >= 0.5) {
-                IconButton(onClick = { onIconClick() }) {
-                    Icon(
-                        painter = painterResource(id = if (isFiltered) R.drawable.eye else R.drawable.striked_eye),
-                        contentDescription = stringResource(id = R.string.show_done_tasks)
-                    )
+            AnimatedVisibility(visible = scrollBehavior.state.collapsedFraction >= COLLAPSED_STATE) {
+                Row {
+                    IconButton(onClick = { onIconClick() }) {
+                        Icon(
+                            painter = painterResource(id = if (isFiltered) R.drawable.eye else R.drawable.striked_eye),
+                            contentDescription = stringResource(id = R.string.show_done_tasks)
+                        )
+                    }
+
+                    IconButton(onClick = { onSettingsIconClick() }) {
+                        Icon(
+                            painter = painterResource(id = R.drawable.settings),
+                            contentDescription = stringResource(id = R.string.settings)
+                        )
+                    }
                 }
             }
         },
@@ -99,7 +121,8 @@ fun PreviewTopAppBar() {
             modifier = Modifier.fillMaxWidth(),
             onIconClick = {},
             isFiltered = false,
-            completed = 5
+            completed = 5,
+            onSettingsIconClick = {}
         )
     }
 }

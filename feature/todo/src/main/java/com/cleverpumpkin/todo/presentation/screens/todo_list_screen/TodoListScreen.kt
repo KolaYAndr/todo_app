@@ -20,7 +20,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import com.cleverpumpkin.cor.presentation.theme.TodoAppTheme
+import com.cleverpumpkin.core.presentation.theme.TodoAppTheme
 import com.cleverpumpkin.todo.R
 import com.cleverpumpkin.todo.domain.todo_model.TodoItem
 import com.cleverpumpkin.todo.presentation.composable_elements.RefreshBlock
@@ -37,6 +37,7 @@ fun TodoListScreen(
     onEndToStartAction: (TodoItem) -> Unit,
     onAddItem: () -> Unit,
     onNavigate: (String) -> Unit,
+    onNavigateToSettings: () -> Unit,
     onFilter: () -> Unit,
     onCheck: (TodoItem) -> Unit,
     onRefresh: () -> Unit,
@@ -54,6 +55,7 @@ fun TodoListScreen(
                     scrollBehavior = scrollBehavior,
                     modifier = Modifier.fillMaxWidth(),
                     onIconClick = { onFilter() },
+                    onSettingsIconClick = { onNavigateToSettings() },
                     isFiltered = uiState.isFiltered,
                     completed = uiState.completed
                 )
@@ -81,8 +83,8 @@ fun TodoListScreen(
                 TodoList(
                     modifier = Modifier
                         .fillMaxSize()
-                        .padding(paddingValues)
-                        .background(TodoAppTheme.colorScheme.backPrimary),
+                        .background(TodoAppTheme.colorScheme.backPrimary)
+                        .padding(paddingValues),
                     scrollBehavior = scrollBehavior,
                     items = uiState.items,
                     onDelete = { item -> onEndToStartAction(item) },
@@ -98,6 +100,8 @@ fun TodoListScreen(
                     errorCode = uiState.errorCode,
                     onRefresh = { onRefresh() },
                     modifier = Modifier.fillMaxSize()
+                        .background(TodoAppTheme.colorScheme.backPrimary)
+                        .padding(paddingValues)
                 )
             }
         }

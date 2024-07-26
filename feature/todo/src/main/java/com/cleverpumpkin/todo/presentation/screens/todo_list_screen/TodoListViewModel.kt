@@ -2,10 +2,9 @@ package com.cleverpumpkin.todo.presentation.screens.todo_list_screen
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.cleverpumpkin.networ.domain.connectivity_observer.ConnectivityObserver
-import com.cleverpumpkin.networ.domain.connectivity_observer.Status
-import com.cleverpumpkin.networ.domain.response_wrapper.Response
-import com.cleverpumpkin.todo.data.task_scheduler.BackgroundTaskScheduler
+import com.cleverpumpkin.network.domain.connectivity_observer.ConnectivityObserver
+import com.cleverpumpkin.network.domain.connectivity_observer.Status
+import com.cleverpumpkin.network.domain.response_wrapper.Response
 import com.cleverpumpkin.todo.domain.repository.TodoItemsRepository
 import com.cleverpumpkin.todo.domain.todo_model.TodoItem
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -26,7 +25,6 @@ import javax.inject.Inject
 @HiltViewModel
 class TodoListViewModel @Inject constructor(
     private val repository: TodoItemsRepository,
-    private val backgroundTaskScheduler: BackgroundTaskScheduler,
     private val connectivityObserver: ConnectivityObserver
 ) : ViewModel() {
 
@@ -35,7 +33,6 @@ class TodoListViewModel @Inject constructor(
 
     init {
         getTodos()
-        scheduleSync()
         observeNetworkState()
     }
 
@@ -47,12 +44,8 @@ class TodoListViewModel @Inject constructor(
         }
     }
 
-    private fun scheduleSync() {
-        backgroundTaskScheduler.sync()
-    }
-
     private fun getTodos() = viewModelScope.launch {
-        processResponse(repository.fetchTodoItems()) {
+        repository.fetchTodoItems()
             viewModelScope.launch {
                 repository.todoItemsFlow.combine(_uiState) { items: List<TodoItem>, state: TodoListUiState ->
                     val filteredItems =
@@ -63,8 +56,6 @@ class TodoListViewModel @Inject constructor(
                     _uiState.update { it.copy(items = filteredItems, completed = count) }
                 }
             }
-        }
-
     }
 
     fun refresh() = viewModelScope.launch {

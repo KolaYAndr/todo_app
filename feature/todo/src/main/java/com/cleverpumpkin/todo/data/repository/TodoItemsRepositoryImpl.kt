@@ -1,15 +1,16 @@
 package com.cleverpumpkin.todo.data.repository
 
 import android.content.SharedPreferences
-import com.cleverpumpkin.cor.data.preference.PreferenceKeys
-import com.cleverpumpkin.cor.id_handlers.DeviceIdProvider
+import com.cleverpumpkin.core.data.preference.PreferenceKeys
+import com.cleverpumpkin.core.id_handlers.DeviceIdProvider
 import com.cleverpumpkin.database.data.TodoDao
-import com.cleverpumpkin.networ.domain.api.TodoApi
-import com.cleverpumpkin.networ.domain.response_wrapper.Response
-import com.cleverpumpkin.networ.domain.responses.AddItemResponse
-import com.cleverpumpkin.networ.domain.responses.ChangeItemResponse
-import com.cleverpumpkin.networ.domain.responses.DeleteItemByIdResponse
-import com.cleverpumpkin.networ.domain.responses.GetItemListResponse
+import com.cleverpumpkin.network.domain.api.TodoApi
+import com.cleverpumpkin.network.domain.response_wrapper.Response
+import com.cleverpumpkin.network.domain.responses.AddItemResponse
+import com.cleverpumpkin.network.domain.responses.ChangeItemResponse
+import com.cleverpumpkin.network.domain.responses.DeleteItemByIdResponse
+import com.cleverpumpkin.network.domain.responses.GetItemListResponse
+import com.cleverpumpkin.todo.data.task_scheduler.BackgroundTaskScheduler
 import com.cleverpumpkin.todo.domain.mappers.toDomain
 import com.cleverpumpkin.todo.domain.mappers.toDto
 import com.cleverpumpkin.todo.domain.mappers.toEntity
@@ -31,8 +32,14 @@ class TodoItemsRepositoryImpl @Inject constructor(
     private val api: TodoApi,
     private val preferences: SharedPreferences,
     private val deviceIdProvider: DeviceIdProvider,
-    private val dao: TodoDao
+    private val dao: TodoDao,
+    backgroundTaskScheduler: BackgroundTaskScheduler,
 ) : TodoItemsRepository {
+
+    init {
+        backgroundTaskScheduler.sync()
+    }
+
     private val _todoItemsFlow = MutableStateFlow<List<TodoItem>>(emptyList())
     override val todoItemsFlow: StateFlow<List<TodoItem>> get() = _todoItemsFlow.asStateFlow()
 
@@ -41,6 +48,10 @@ class TodoItemsRepositoryImpl @Inject constructor(
             val revision = getRevision()
             val token = getToken()
             val response = api.getItems(revision, token)
+
+            _todoItemsFlow.update {
+                dao.getAll().filter { !it.isDeleted }.map { it.toDomain() }
+            }
 
             if (response is Response.Success) {
                 rewriteRevision(response.result.revision)
