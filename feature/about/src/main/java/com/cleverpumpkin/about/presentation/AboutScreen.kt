@@ -2,6 +2,8 @@ package com.cleverpumpkin.about.presentation
 
 import android.content.Context
 import android.view.ContextThemeWrapper
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
@@ -9,6 +11,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.lifecycle.LifecycleOwner
+import com.cleverpumpkin.core.presentation.theme.TodoAppTheme
 import com.yandex.div.DivDataTag
 import com.yandex.div.core.Div2Context
 import com.yandex.div.core.DivConfiguration
@@ -19,7 +22,6 @@ import com.yandex.div.data.Variable
 import com.yandex.div.json.ParsingErrorLogger
 import com.yandex.div.picasso.PicassoDivImageLoader
 import com.yandex.div2.DivData
-import com.yandex.div2.DivVariable
 
 @Composable
 fun AboutScreen(
@@ -28,7 +30,9 @@ fun AboutScreen(
     themeString: String,
     modifier: Modifier = Modifier
 ) {
-    Scaffold { paddingValues ->
+    Scaffold(
+        modifier = modifier
+    ) { paddingValues ->
         val contextWrapper = remember { contextThemeWrapper }
         val assetReader = remember { AssetReader() }
         AndroidView(
@@ -45,7 +49,10 @@ fun AboutScreen(
                     }
                 )
             },
-            modifier = modifier.padding(paddingValues)
+            modifier = Modifier
+                .fillMaxSize()
+                .background(TodoAppTheme.colorScheme.backPrimary)
+                .padding(paddingValues)
         ) { div2View ->
             val divJson = assetReader.read(div2View.context.assets.open("about"))
             val templatesJson = divJson.getJSONObject("templates")
@@ -58,7 +65,6 @@ fun AboutScreen(
             val divData = DivData(environment, cardJson)
 
             div2View.setData(divData, DivDataTag("div"))
-
         }
     }
 }

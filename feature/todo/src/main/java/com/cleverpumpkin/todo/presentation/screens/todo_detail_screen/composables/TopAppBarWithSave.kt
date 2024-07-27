@@ -13,25 +13,29 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.isTraversalGroup
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.traversalIndex
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import com.cleverpumpkin.core.presentation.theme.TodoAppTheme
 import com.cleverpumpkin.todo.R
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun UsualTopAppBar(
+fun TopAppBarWithSave(
     onSave: () -> Unit,
     onNavigate: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     TopAppBar(
-        modifier = modifier,
+        modifier = modifier.semantics { isTraversalGroup = true },
         colors = TopAppBarDefaults.topAppBarColors(
             containerColor = TodoAppTheme.colorScheme.backPrimary
         ),
         title = {},
         navigationIcon = {
             IconButton(
+                modifier = Modifier.semantics { traversalIndex = -1f },
                 onClick = { onNavigate() },
                 colors = IconButtonDefaults.iconButtonColors(contentColor = TodoAppTheme.colorScheme.labelPrimary)
             ) {
@@ -45,6 +49,7 @@ fun UsualTopAppBar(
         },
         actions = {
             TextButton(
+                modifier = Modifier.semantics { traversalIndex = 1f },
                 onClick = { onSave() },
                 colors = ButtonDefaults.textButtonColors(
                     contentColor = TodoAppTheme.colorScheme.blue
@@ -61,9 +66,9 @@ fun UsualTopAppBar(
 
 @PreviewLightDark
 @Composable
-fun PreviewTopBar() {
+fun PreviewTopBarWithSave() {
     TodoAppTheme {
-        UsualTopAppBar(
+        TopAppBarWithSave(
             onSave = {},
             onNavigate = {}
         )

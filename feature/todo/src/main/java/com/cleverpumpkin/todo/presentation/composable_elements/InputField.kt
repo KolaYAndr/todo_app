@@ -1,7 +1,11 @@
 package com.cleverpumpkin.todo.presentation.composable_elements
 
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
@@ -9,14 +13,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
 import com.cleverpumpkin.core.presentation.theme.TodoAppTheme
 import com.cleverpumpkin.todo.R
-import androidx.compose.material3.Text
-import androidx.compose.ui.tooling.preview.PreviewLightDark
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
 
 @Composable
 fun InputField(
@@ -53,7 +53,7 @@ fun InputField(
 fun PreviewInput() {
     TodoAppTheme {
         InputField(
-            onTextValueChange = {  },
+            onTextValueChange = { },
             text = "",
             modifier = Modifier
                 .fillMaxWidth()

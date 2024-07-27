@@ -16,8 +16,10 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -56,14 +58,14 @@ fun TodoList(
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         items(items) { todo ->
-            val expandDropMenu = remember { mutableStateOf(false) }
+            var expandDropMenu by remember { mutableStateOf(false) }
             SwipeableBackground(
                 onEndToStart = { onDelete(todo) },
                 onStartToEnd = {
                     onCheck(todo)
                 },
                 onClick = { onNavigate(todo.id) },
-                onLongClick = { expandDropMenu.value = true },
+                onLongClick = { expandDropMenu = true },
                 modifier = Modifier.fillParentMaxWidth()
             ) {
                 TodoItemView(
@@ -77,27 +79,37 @@ fun TodoList(
                         onCheck(todo)
                     }
                 )
-                AnimatedVisibility(visible = expandDropMenu.value) {
+                AnimatedVisibility(visible = expandDropMenu) {
                     DropdownMenu(
                         modifier = Modifier
                             .background(TodoAppTheme.colorScheme.backPrimary)
                             .wrapContentSize(),
-                        expanded = expandDropMenu.value,
-                        onDismissRequest = { expandDropMenu.value = false }
+                        expanded = expandDropMenu,
+                        onDismissRequest = { expandDropMenu = false }
                     ) {
                         DropdownMenuItem(
-                            text = { Text(text = stringResource(id = R.string.delete)) },
+                            text = {
+                                Text(
+                                    text = stringResource(id = R.string.delete),
+                                    color = TodoAppTheme.colorScheme.labelPrimary
+                                )
+                            },
                             onClick = {
                                 onDelete(todo)
-                                expandDropMenu.value = false
+                                expandDropMenu = false
                             }
                         )
                         if (!todo.isDone) {
                             DropdownMenuItem(
-                                text = { Text(text = stringResource(id = R.string.mark_done)) },
+                                text = {
+                                    Text(
+                                        text = stringResource(id = R.string.mark_done),
+                                        color = TodoAppTheme.colorScheme.labelPrimary
+                                    )
+                                },
                                 onClick = {
                                     onCheck(todo)
-                                    expandDropMenu.value = false
+                                    expandDropMenu = false
                                 }
                             )
                         }

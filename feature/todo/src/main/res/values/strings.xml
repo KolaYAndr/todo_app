@@ -17,7 +17,7 @@
     <string name="visibility_content">Show done tasks</string>
     <string name="visibility_title">Visibility</string>
     <string name="item_swipe">Item swipe</string>
-    <string name="close">Close</string>
+    <string name="close">Return to list screen</string>
     <string name="mark_done">Mark done</string>
     <string name="ok">@android:string/ok</string>
     <string name="cancel">Cancel</string>
@@ -32,4 +32,6 @@
     <string name="yandex_login">Yandex login</string>
     <string name="api_key_login">Api key login</string>
     <string name="settings">Go to settings screen</string>
+    <string name="deadline_semantics">Deadline: %s</string>
+    <string name="no_deadline_set">Deadline is not set</string>
 </resources>

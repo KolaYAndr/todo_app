@@ -5,7 +5,6 @@ import androidx.compose.animation.expandVertically
 import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -17,27 +16,20 @@ import androidx.compose.material3.DatePickerDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.SnackbarDuration
-import androidx.compose.material3.SnackbarHost
-import androidx.compose.material3.SnackbarHostState
-import androidx.compose.material3.SnackbarResult
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import kotlinx.coroutines.launch
 import java.time.LocalDateTime
 import java.time.ZoneOffset
 import java.time.format.DateTimeFormatter
@@ -51,8 +43,7 @@ import com.cleverpumpkin.todo.presentation.composable_elements.RefreshBlock
 import com.cleverpumpkin.todo.presentation.screens.todo_detail_screen.composables.DeadlineBlock
 import com.cleverpumpkin.todo.presentation.screens.todo_detail_screen.composables.ImportanceBlock
 import com.cleverpumpkin.todo.presentation.screens.todo_detail_screen.composables.ImportanceBottomSheet
-import com.cleverpumpkin.todo.presentation.screens.todo_detail_screen.composables.UsualTopAppBar
-import com.cleverpumpkin.todo.presentation.utils.getErrorStringResource
+import com.cleverpumpkin.todo.presentation.screens.todo_detail_screen.composables.TopAppBarWithSave
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -68,42 +59,14 @@ fun TodoDetailScreen(
     modifier: Modifier = Modifier
 ) {
     val uiState = state.value
-    val snackbarHostState = remember { SnackbarHostState() }
-    val scope = rememberCoroutineScope()
-    Scaffold(modifier = modifier.background(TodoAppTheme.colorScheme.backPrimary),
+    Scaffold(
+        modifier = modifier.background(TodoAppTheme.colorScheme.backPrimary),
         topBar = {
-            UsualTopAppBar(
+            TopAppBarWithSave(
+                modifier = Modifier,
                 onSave = { onSave() },
                 onNavigate = { onNavBack() }
             )
-        },
-        snackbarHost = {
-            if (uiState.errorCode != null) {
-                val errorMessage = stringResource(
-                    id = getErrorStringResource(uiState.errorCode)
-                )
-                val actionMessage = stringResource(id = R.string.refresh)
-                SnackbarHost(hostState = snackbarHostState)
-                LaunchedEffect(Unit) {
-                    scope.launch {
-                        val result = snackbarHostState
-                            .showSnackbar(
-                                message = errorMessage,
-                                actionLabel = actionMessage,
-                                duration = SnackbarDuration.Indefinite
-                            )
-                        when (result) {
-                            SnackbarResult.ActionPerformed -> {
-                                onRefresh()
-                            }
-
-                            SnackbarResult.Dismissed -> {
-                                onNavBack()
-                            }
-                        }
-                    }
-                }
-            }
         }
     ) { paddingValues ->
         when (uiState.errorCode) {
@@ -123,42 +86,37 @@ fun TodoDetailScreen(
                             .fillMaxWidth()
                             .padding(16.dp)
                     )
-                    val importanceString = when (uiState.importance) {
+                    val importanceStringId = when (uiState.importance) {
                         Importance.Low -> R.string.importance_low
                         Importance.Normal -> R.string.importance_normal
                         Importance.Urgent -> R.string.importance_urgent
                     }
-                    val importance = stringResource(id = importanceString)
+                    val importance = stringResource(id = importanceStringId)
                     var showDropdown by remember { mutableStateOf(false) }
 
-                    Box(
+                    ImportanceBlock(
+                        importanceText = importance,
                         modifier = Modifier
-                            .clickable { showDropdown = true }
+                            .fillMaxWidth()
                             .padding(16.dp)
+                            .clickable { showDropdown = true }
+                            .background(TodoAppTheme.colorScheme.backPrimary)
+                    )
+
+                    val sheetState = rememberModalBottomSheetState(
+                        skipPartiallyExpanded = true
+                    )
+
+                    this@Column.AnimatedVisibility(
+                        visible = showDropdown,
+                        enter = expandVertically(expandFrom = Alignment.Top),
+                        exit = shrinkVertically(shrinkTowards = Alignment.Top)
                     ) {
-                        ImportanceBlock(
-                            importanceText = importance,
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(top = 12.dp)
-                                .background(TodoAppTheme.colorScheme.backPrimary)
+                        ImportanceBottomSheet(
+                            onSelectImportance = { onSelectImportance(it) },
+                            sheetState = sheetState,
+                            onDismiss = { showDropdown = false }
                         )
-
-                        val sheetState = rememberModalBottomSheetState(
-                            skipPartiallyExpanded = true
-                        )
-
-                        this@Column.AnimatedVisibility(
-                            visible = showDropdown,
-                            enter = expandVertically(expandFrom = Alignment.Top),
-                            exit = shrinkVertically(shrinkTowards = Alignment.Top)
-                        ) {
-                            ImportanceBottomSheet(
-                                onSelectImportance = { onSelectImportance(it) },
-                                sheetState = sheetState,
-                                onDismiss = { showDropdown = false }
-                            )
-                        }
                     }
 
                     HorizontalDivider(
@@ -245,7 +203,8 @@ fun TodoDetailScreen(
             else -> RefreshBlock(
                 errorCode = uiState.errorCode,
                 onRefresh = { onRefresh() },
-                modifier = Modifier.fillMaxSize()
+                modifier = Modifier
+                    .fillMaxSize()
                     .background(TodoAppTheme.colorScheme.backPrimary)
                     .padding(paddingValues)
             )

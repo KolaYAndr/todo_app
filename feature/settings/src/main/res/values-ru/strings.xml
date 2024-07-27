@@ -3,5 +3,6 @@
     <string name="about_app">О приложении</string>
     <string name="settings">Настройки</string>
     <string name="restart_changes">Перезапустите, чтобы изменения вступили в силу</string>
-    <string name="chosen_theme">Выбранная тема</string>
+    <string name="chosen_theme">Выбранная тема:</string>
+    <string name="go_back">Вернуться на предыдущий экран</string>
 </resources>
